@@ -704,7 +704,30 @@
       <input class="form-input" type="password" id="login-password" placeholder="Your password" autocomplete="current-password">
     </div>
     <button class="form-btn" id="login-btn" onclick="doLogin()">Sign In →</button>
+    <div style="text-align:center;margin-top:14px;">
+      <a onclick="showForgotPassword()" style="font-size:13px;color:var(--grey);cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--grey)'">Forgot your password?</a>
+    </div>
     <div class="auth-switch">New here? <a onclick="showScreen('signup')">Create an account</a></div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="forgot" class="screen">
+  <div class="auth-card" style="margin:auto">
+    <div class="auth-logo">CanUniverse</div>
+    <div class="auth-org">UP & AT 'EM ACADEMY · CANU CANADA</div>
+    <div class="auth-title">Reset your password</div>
+    <div class="auth-sub">Enter your email and we'll send you a reset link.</div>
+    <div class="auth-error" id="forgot-error"></div>
+    <div id="forgot-success" style="background:#F0FFF4;border:1px solid rgba(45,106,79,0.2);border-radius:8px;padding:12px 14px;font-size:13px;color:#2D6A4F;margin-bottom:16px;display:none;">
+      ✓ Reset link sent — check your email inbox.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" id="forgot-email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <button class="form-btn" id="forgot-btn" onclick="doForgotPassword()">Send Reset Link →</button>
+    <div class="auth-switch"><a onclick="showScreen('login')">← Back to sign in</a></div>
   </div>
 </div>
 
@@ -1313,6 +1336,41 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── FORGOT PASSWORD ──
+function showForgotPassword() {
+  document.getElementById('forgot-email').value = document.getElementById('login-email').value || '';
+  document.getElementById('forgot-error').style.display = 'none';
+  document.getElementById('forgot-success').style.display = 'none';
+  document.getElementById('forgot-btn').disabled = false;
+  document.getElementById('forgot-btn').textContent = 'Send Reset Link →';
+  showScreen('forgot');
+}
+
+async function doForgotPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const errEl = document.getElementById('forgot-error');
+  const successEl = document.getElementById('forgot-success');
+  const btn = document.getElementById('forgot-btn');
+
+  if (!email) { showError(errEl, 'Please enter your email address.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://adamcd93.github.io/canuniverse'
+  });
+
+  if (error) {
+    showError(errEl, 'Something went wrong — please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link →';
+  } else {
+    successEl.style.display = 'block';
+    btn.textContent = 'Sent ✓';
+  }
 }
 
 // ── START ──
