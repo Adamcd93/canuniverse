@@ -2411,6 +2411,15 @@ function enterApp() {
     document.getElementById('tab-admin').style.display = 'flex';
     document.getElementById('tab-classroom').style.display = 'flex';
   }
+  // Also check via Supabase in case profile role isn't loaded yet
+  if (!currentProfile?.role || currentProfile.role !== 'admin') {
+    sb.from('profiles').select('role').eq('id', currentUser.id).single().then(({ data }) => {
+      if (data?.role === 'admin') {
+        document.getElementById('tab-admin').style.display = 'flex';
+        document.getElementById('tab-classroom').style.display = 'flex';
+      }
+    });
+  }
 
   showScreen('app');
   switchPage('home');
@@ -3543,14 +3552,14 @@ document.addEventListener('keydown', (e) => {
     <!-- Hair style -->
     <div class="avatar-section-label">Hair Style</div>
     <div class="avatar-options" id="hair-options">
-      <div class="avatar-opt selected" data-hair="short" onclick="selectHair(this,'short')" title="Short">✂️</div>
-      <div class="avatar-opt" data-hair="medium" onclick="selectHair(this,'medium')" title="Medium">💇</div>
-      <div class="avatar-opt" data-hair="long" onclick="selectHair(this,'long')" title="Long">👩</div>
-      <div class="avatar-opt" data-hair="curly" onclick="selectHair(this,'curly')" title="Curly">🌀</div>
-      <div class="avatar-opt" data-hair="locs" onclick="selectHair(this,'locs')" title="Locs">🫧</div>
-      <div class="avatar-opt" data-hair="afro" onclick="selectHair(this,'afro')" title="Afro">⭕</div>
-      <div class="avatar-opt" data-hair="bun" onclick="selectHair(this,'bun')" title="Bun">🔵</div>
-      <div class="avatar-opt" data-hair="bald" onclick="selectHair(this,'bald')" title="Bald">🥚</div>
+      <div class="avatar-opt selected" data-hair="short" onclick="selectHair(this,'short')" title="Short"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><rect x="6" y="8" width="16" height="7" rx="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="medium" onclick="selectHair(this,'medium')" title="Medium"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="15" r="8" fill="#E8C99A"/><ellipse cx="14" cy="11" rx="9" ry="6" fill="#1A1008"/><rect x="5" y="14" width="5" height="8" rx="3" fill="#1A1008"/><rect x="18" y="14" width="5" height="8" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="long" onclick="selectHair(this,'long')" title="Long"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="8" fill="#E8C99A"/><ellipse cx="14" cy="10" rx="9" ry="6" fill="#1A1008"/><rect x="4" y="13" width="5" height="12" rx="3" fill="#1A1008"/><rect x="19" y="13" width="5" height="12" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="curly" onclick="selectHair(this,'curly')" title="Curly"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><ellipse cx="14" cy="10" rx="10" ry="7" fill="#1A1008"/><circle cx="5" cy="13" r="4" fill="#1A1008"/><circle cx="23" cy="13" r="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="locs" onclick="selectHair(this,'locs')" title="Locs"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="8" fill="#E8C99A"/><ellipse cx="14" cy="9" rx="9" ry="5" fill="#1A1008"/><rect x="5" y="12" width="3" height="10" rx="2" fill="#1A1008"/><rect x="9" y="12" width="3" height="12" rx="2" fill="#1A1008"/><rect x="13" y="12" width="3" height="11" rx="2" fill="#1A1008"/><rect x="17" y="12" width="3" height="12" rx="2" fill="#1A1008"/><rect x="21" y="12" width="3" height="10" rx="2" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="afro" onclick="selectHair(this,'afro')" title="Afro"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="7" fill="#E8C99A"/><ellipse cx="14" cy="11" rx="12" ry="10" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="bun" onclick="selectHair(this,'bun')" title="Bun"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><ellipse cx="14" cy="12" rx="9" ry="5" fill="#1A1008"/><circle cx="14" cy="6" r="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="bald" onclick="selectHair(this,'bald')" title="Bald"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="15" r="9" fill="#E8C99A"/></svg></div>
     </div>
 
     <!-- Hair colour -->
