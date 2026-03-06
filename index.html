@@ -1728,13 +1728,13 @@ body {
       <label class="form-label">Email</label>
       <input class="form-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
     </div>
+    <div class="remember-row" style="margin-bottom:14px;margin-top:6px;">
+      <input class="remember-checkbox" type="checkbox" id="remember-me">
+      <label class="remember-label" for="remember-me">Remember my email</label>
+    </div>
     <div class="form-group">
       <label class="form-label">Password</label>
       <input class="form-input" type="password" id="login-password" placeholder="Your password" autocomplete="current-password">
-    </div>
-    <div class="remember-row" style="margin-bottom:14px;margin-top:2px;">
-      <input class="remember-checkbox" type="checkbox" id="remember-me">
-      <label class="remember-label" for="remember-me">Remember my email</label>
     </div>
     <button class="form-btn" id="login-btn" onclick="doLogin()">Sign In →</button>
     <div style="text-align:center;margin-top:14px;">
@@ -2955,52 +2955,9 @@ async function verifyAdmin() {
 }
 
 // ── AUTH ──
-async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  
-  if (!email || !password) { 
-    errEl.textContent = 'Please enter your email and password.';
-    errEl.style.display = 'block'; 
-    return; 
-  }
+// (classroom doLogin removed — using main app doLogin)
 
-  const loginBtn = document.querySelector('.login-btn');
-  loginBtn.textContent = 'Signing in...';
-  loginBtn.disabled = true;
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  
-  if (error) { 
-    errEl.textContent = 'Incorrect email or password.';
-    errEl.style.display = 'block';
-    loginBtn.textContent = 'Enter Classroom →';
-    loginBtn.disabled = false;
-    return; 
-  }
-
-  currentUser = data.user;
-  const isAdmin = await verifyAdmin();
-  
-  if (!isAdmin) {
-    errEl.textContent = 'This account does not have admin access.';
-    errEl.style.display = 'block';
-    loginBtn.textContent = 'Enter Classroom →';
-    loginBtn.disabled = false;
-    await sb.auth.signOut();
-    return;
-  }
-
-  enterClassroom();
-}
-
-async function doLogout() {
-  await sb.auth.signOut();
-  currentUser = null;
-  document.getElementById('classroom').style.display = 'none';
-  document.getElementById('login-overlay').style.display = 'flex';
-}
+// (classroom doLogout removed — using main app doLogout)
 
 // ── ENTER CLASSROOM ──
 async function enterClassroom() {
