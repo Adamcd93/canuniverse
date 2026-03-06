@@ -652,6 +652,266 @@
     .f8-grid { grid-template-columns: repeat(4, 1fr); }
     .auth-card { padding: 52px 44px; }
   }
+
+  /* ── PROFILE PAGE ── */
+  .profile-hero {
+    background: var(--black);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(176,28,32,0.4), transparent 65%);
+  }
+
+  .profile-avatar-display {
+    position: relative;
+    z-index: 1;
+    margin: 0 auto 14px;
+    width: 100px; height: 100px;
+  }
+
+  .avatar-svg-wrap {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(212,168,67,0.5);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    background: #f5e6d3;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-svg-wrap:hover { transform: scale(1.05); }
+
+  .profile-display-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 4px;
+  }
+
+  .profile-role-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 14px;
+  }
+
+  .profile-edit-avatar-btn {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    z-index: 1;
+  }
+
+  .profile-edit-avatar-btn:hover { background: rgba(255,255,255,0.18); color: white; }
+
+  .profile-section {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .profile-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--grey);
+    margin-bottom: 14px;
+  }
+
+  .profile-field { margin-bottom: 14px; }
+  .profile-field:last-child { margin-bottom: 0; }
+  .profile-field-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--charcoal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .profile-input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid #E8E8E8;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--black);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .profile-input:focus { border-color: var(--red); background: white; }
+
+  .profile-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .profile-save-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+
+  .profile-save-btn:hover { background: var(--dark-red); }
+
+  /* ── AVATAR BUILDER MODAL ── */
+  .avatar-modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 300;
+    align-items: flex-end;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .avatar-modal-overlay.open { display: flex; }
+
+  .avatar-modal {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 680px;
+    padding: 28px 24px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+    max-height: 88vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease both;
+  }
+
+  .avatar-preview-large {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    border: 3px solid var(--gold);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    background: #f5e6d3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--grey);
+    margin-bottom: 10px;
+    margin-top: 18px;
+  }
+
+  .avatar-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .avatar-opt {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid #E8E8E8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.15s;
+    background: white;
+    flex-shrink: 0;
+  }
+
+  .avatar-opt:hover { border-color: var(--red); transform: scale(1.1); }
+  .avatar-opt.selected { border-color: var(--red); background: #FEF2F2; box-shadow: 0 0 0 2px rgba(176,28,32,0.15); }
+
+  .skin-opt {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .skin-opt:hover { transform: scale(1.15); border-color: rgba(0,0,0,0.2); }
+  .skin-opt.selected { border-color: var(--red); box-shadow: 0 0 0 2px rgba(176,28,32,0.3); transform: scale(1.1); }
+
+  .shirt-opt {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .shirt-opt:hover { transform: scale(1.1); }
+  .shirt-opt.selected { border-color: var(--red); box-shadow: 0 0 0 2px rgba(176,28,32,0.3); transform: scale(1.1); }
+
+  .avatar-save-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+  }
+
+  .avatar-save-btn:hover { background: var(--dark-red); }
+
 </style>
 </head>
 <body>
@@ -800,7 +1060,7 @@
       <div class="db-header">
         <div class="db-emoji">🌟</div>
         <div>
-          <div class="db-title">My Rise Dream Board</div>
+          <div class="db-title">My CanU Dream Board</div>
           <div class="db-sub">Tap to view and update your board</div>
         </div>
       </div>
@@ -909,7 +1169,7 @@
     <div class="session-block">
       <div class="block-header" onclick="toggleBlock(this)">
         <div class="block-num">4</div>
-        <div class="block-info"><div class="block-title">Block 4 — The Rise Dream Board</div><div class="block-time">40–80 min · The heart of Session 1</div></div>
+        <div class="block-info"><div class="block-title">Block 4 — The CanU Dream Board</div><div class="block-time">40–80 min · The heart of Session 1</div></div>
         <div class="block-chevron">⌄</div>
       </div>
       <div class="block-body">
@@ -1005,12 +1265,81 @@
     <div id="admin-users"><div class="empty-state"><div class="empty-icon">👥</div>Loading cohort...</div></div>
   </div>
 
+
+  <!-- PROFILE -->
+  <div id="page-profile" class="page">
+    <div class="profile-hero">
+      <div class="profile-avatar-display">
+        <div class="avatar-svg-wrap" id="profile-avatar-display" onclick="openAvatarBuilder()">
+          <svg id="profile-avatar-svg" width="100" height="100" viewBox="0 0 100 100"></svg>
+        </div>
+      </div>
+      <div class="profile-display-name" id="profile-display-name">Adam</div>
+      <div class="profile-role-badge" id="profile-role-badge">Admin</div><br>
+      <button class="profile-edit-avatar-btn" onclick="openAvatarBuilder()">✏️ Edit Avatar</button>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">About You</div>
+      <div class="profile-field">
+        <div class="profile-field-label">Preferred Name</div>
+        <input class="profile-input" id="pf-name" type="text" placeholder="What do you like to be called?">
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">About Me</div>
+        <textarea class="profile-input" id="pf-bio" placeholder="A few sentences about who you are..." style="min-height:80px;resize:vertical;line-height:1.6"></textarea>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">City / Neighbourhood</div>
+        <input class="profile-input" id="pf-city" type="text" placeholder="Where are you from?">
+      </div>
+    </div>
+
+    <div class="profile-section" id="mentee-fields" style="display:none">
+      <div class="profile-section-title">School Info</div>
+      <div class="profile-input-row">
+        <div class="profile-field">
+          <div class="profile-field-label">Age</div>
+          <input class="profile-input" id="pf-age" type="number" placeholder="Age" min="10" max="25">
+        </div>
+        <div class="profile-field">
+          <div class="profile-field-label">Grade</div>
+          <input class="profile-input" id="pf-grade" type="text" placeholder="e.g. Grade 11">
+        </div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">School</div>
+        <input class="profile-input" id="pf-school" type="text" placeholder="Your school name">
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">What I'm Here For</div>
+        <textarea class="profile-input" id="pf-goal" placeholder="What do you hope to get from this program?" style="min-height:70px;resize:vertical;line-height:1.6"></textarea>
+      </div>
+    </div>
+
+    <div class="profile-section" id="mentor-fields" style="display:none">
+      <div class="profile-section-title">Mentor Info</div>
+      <div class="profile-field">
+        <div class="profile-field-label">What I Do</div>
+        <input class="profile-input" id="pf-job" type="text" placeholder="Your career or role">
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">What I Want to Give Back</div>
+        <textarea class="profile-input" id="pf-giveback" placeholder="Why are you mentoring?" style="min-height:70px;resize:vertical;line-height:1.6"></textarea>
+      </div>
+    </div>
+
+    <button class="profile-save-btn" onclick="saveProfile()">Save Profile ✓</button>
+    <div style="height:12px"></div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
     <button class="nav-item" onclick="switchPage('sessions')"><span class="nav-icon">🎯</span><span class="nav-label">Sessions</span></button>
     <button class="nav-item" onclick="switchPage('journey')"><span class="nav-icon">🌱</span><span class="nav-label">Journey</span></button>
     <button class="nav-item" onclick="switchPage('journal')"><span class="nav-icon">📓</span><span class="nav-label">Journal</span></button>
+    <button class="nav-item" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
     <button class="nav-item" id="admin-nav" style="display:none" onclick="switchPage('admin')"><span class="nav-icon">⚙️</span><span class="nav-label">Admin</span></button>
   </div>
 </div>
@@ -1019,7 +1348,7 @@
 <div class="modal-overlay" id="dream-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">My Rise Dream Board</div>
+    <div class="modal-title">My CanU Dream Board</div>
     <div class="modal-sub">Completely, personally yours. No right answers. The only rule is honesty.</div>
     <div class="dream-section">
       <div class="dream-label">☁️ My Dream — Who do I want to become?</div>
@@ -1088,13 +1417,14 @@ function switchPage(id) {
   const pages = ['home','sessions','journey','journal','admin'];
   const navItems = document.querySelectorAll('.nav-item');
   const visiblePages = currentProfile?.role === 'admin'
-    ? ['home','sessions','journey','journal','admin']
-    : ['home','sessions','journey','journal'];
+    ? ['home','sessions','journey','journal','profile','admin']
+    : ['home','sessions','journey','journal','profile'];
   const idx = visiblePages.indexOf(id);
   if (idx >= 0) navItems[idx]?.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'journal') loadJournal();
   if (id === 'admin') loadAdminData();
+  if (id === 'profile') loadProfilePage();
   closeMenu();
 }
 
@@ -1413,6 +1743,256 @@ async function doForgotPassword() {
 // ── START ──
 init();
 
+
+// ── AVATAR STATE ──
+let avatarConfig = {
+  skin: '#FDDBB4',
+  hair: 'short',
+  hairColor: '#1A1008',
+  shirt: '#B01C20'
+};
+
+// ── DRAW AVATAR SVG ──
+function drawAvatar(svgEl, cfg, size = 100) {
+  if (!svgEl) return;
+  const s = size;
+  const cx = s / 2;
+
+  // Proportions
+  const headY = s * 0.28;
+  const headR = s * 0.22;
+  const neckH = s * 0.08;
+  const shirtY = headY + headR + neckH;
+
+  // Hair shapes by style
+  const hairShapes = {
+    short: `<rect x="${cx - headR + 2}" y="${headY - headR * 0.6}" width="${headR * 2 - 4}" height="${headR * 0.7}" rx="8" fill="${cfg.hairColor}"/>`,
+    medium: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
+             <rect x="${cx - headR - 1}" y="${headY}" width="8" height="${headR * 1.1}" rx="4" fill="${cfg.hairColor}"/>
+             <rect x="${cx + headR - 7}" y="${headY}" width="8" height="${headR * 1.1}" rx="4" fill="${cfg.hairColor}"/>`,
+    long: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
+           <rect x="${cx - headR - 2}" y="${headY}" width="10" height="${headR * 1.8}" rx="5" fill="${cfg.hairColor}"/>
+           <rect x="${cx + headR - 8}" y="${headY}" width="10" height="${headR * 1.8}" rx="5" fill="${cfg.hairColor}"/>`,
+    curly: `<ellipse cx="${cx}" cy="${headY - headR * 0.3}" rx="${headR + 4}" ry="${headR * 0.9}" fill="${cfg.hairColor}"/>
+            <circle cx="${cx - headR}" cy="${headY - headR * 0.1}" r="6" fill="${cfg.hairColor}"/>
+            <circle cx="${cx + headR}" cy="${headY - headR * 0.1}" r="6" fill="${cfg.hairColor}"/>
+            <circle cx="${cx - headR * 0.5}" cy="${headY - headR * 1.1}" r="5" fill="${cfg.hairColor}"/>
+            <circle cx="${cx + headR * 0.5}" cy="${headY - headR * 1.1}" r="5" fill="${cfg.hairColor}"/>`,
+    locs: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
+           ${[...Array(7)].map((_, i) => {
+             const x = cx - headR + (i * headR * 0.33);
+             return `<rect x="${x}" y="${headY - headR * 0.5}" width="5" height="${headR * (0.8 + Math.sin(i) * 0.3)}" rx="3" fill="${cfg.hairColor}" opacity="${0.8 + i * 0.03}"/>`;
+           }).join('')}`,
+    afro: `<ellipse cx="${cx}" cy="${headY - headR * 0.5}" rx="${headR + 10}" ry="${headR + 6}" fill="${cfg.hairColor}"/>`,
+    bun: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.6}" fill="${cfg.hairColor}"/>
+          <circle cx="${cx}" cy="${headY - headR * 1.0}" r="${headR * 0.35}" fill="${cfg.hairColor}"/>`,
+    bald: ``
+  };
+
+  const hair = hairShapes[cfg.hair] || hairShapes.short;
+
+  const svg = `
+    <!-- Background -->
+    <rect width="${s}" height="${s}" fill="transparent"/>
+
+    <!-- Shirt / body -->
+    <ellipse cx="${cx}" cy="${s * 0.88}" rx="${s * 0.38}" ry="${s * 0.28}" fill="${cfg.shirt}"/>
+
+    <!-- Neck -->
+    <rect x="${cx - s * 0.07}" y="${headY + headR - 2}" width="${s * 0.14}" height="${neckH + 4}" rx="4" fill="${cfg.skin}"/>
+
+    <!-- Head -->
+    <circle cx="${cx}" cy="${headY}" r="${headR}" fill="${cfg.skin}"/>
+
+    <!-- Hair (behind face elements) -->
+    ${hair}
+
+    <!-- Eyes -->
+    <circle cx="${cx - headR * 0.35}" cy="${headY - headR * 0.05}" r="${headR * 0.1}" fill="#2C1810"/>
+    <circle cx="${cx + headR * 0.35}" cy="${headY - headR * 0.05}" r="${headR * 0.1}" fill="#2C1810"/>
+    <circle cx="${cx - headR * 0.32}" cy="${headY - headR * 0.08}" r="${headR * 0.04}" fill="white"/>
+    <circle cx="${cx + headR * 0.32}" cy="${headY - headR * 0.08}" r="${headR * 0.04}" fill="white"/>
+
+    <!-- Nose -->
+    <ellipse cx="${cx}" cy="${headY + headR * 0.18}" rx="${headR * 0.08}" ry="${headR * 0.06}" fill="${cfg.skin}" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+
+    <!-- Smile -->
+    <path d="M ${cx - headR * 0.25} ${headY + headR * 0.38} Q ${cx} ${headY + headR * 0.55} ${cx + headR * 0.25} ${headY + headR * 0.38}" fill="none" stroke="#C0856A" stroke-width="${s * 0.018}" stroke-linecap="round"/>
+  `;
+
+  svgEl.innerHTML = svg;
+}
+
+// ── AVATAR BUILDER ──
+function openAvatarBuilder() {
+  // Load saved config
+  const saved = currentProfile?.avatar_config;
+  if (saved) {
+    try {
+      const parsed = typeof saved === 'string' ? JSON.parse(saved) : saved;
+      Object.assign(avatarConfig, parsed);
+    } catch(e) {}
+  }
+
+  // Sync UI selections
+  syncAvatarUI();
+  updateBuilderPreview();
+  document.getElementById('avatar-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAvatarBuilder() {
+  document.getElementById('avatar-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function syncAvatarUI() {
+  // Skin
+  document.querySelectorAll('.skin-opt[data-skin]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.skin === avatarConfig.skin);
+  });
+  // Hair style
+  document.querySelectorAll('.avatar-opt[data-hair]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.hair === avatarConfig.hair);
+  });
+  // Hair color
+  document.querySelectorAll('.skin-opt[data-hc]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.hc === avatarConfig.hairColor);
+  });
+  // Shirt
+  document.querySelectorAll('.shirt-opt[data-shirt]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.shirt === avatarConfig.shirt);
+  });
+}
+
+function updateBuilderPreview() {
+  drawAvatar(document.getElementById('builder-preview-svg'), avatarConfig, 110);
+}
+
+function updateProfileAvatar() {
+  drawAvatar(document.getElementById('profile-avatar-svg'), avatarConfig, 100);
+}
+
+function selectSkin(el, val) {
+  document.querySelectorAll('.skin-opt[data-skin]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  avatarConfig.skin = val;
+  updateBuilderPreview();
+}
+
+function selectHair(el, val) {
+  document.querySelectorAll('.avatar-opt[data-hair]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  avatarConfig.hair = val;
+  updateBuilderPreview();
+}
+
+function selectHairColor(el, val) {
+  document.querySelectorAll('.skin-opt[data-hc]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  avatarConfig.hairColor = val;
+  updateBuilderPreview();
+}
+
+function selectShirt(el, val) {
+  document.querySelectorAll('.shirt-opt[data-shirt]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  avatarConfig.shirt = val;
+  updateBuilderPreview();
+}
+
+async function saveAvatar() {
+  if (!currentUser) return;
+  const configStr = JSON.stringify(avatarConfig);
+  await sb.from('profiles').update({ avatar_config: configStr }).eq('id', currentUser.id);
+  if (currentProfile) currentProfile.avatar_config = configStr;
+  updateProfileAvatar();
+  closeAvatarBuilder();
+  showToast('Avatar saved ✓');
+}
+
+// ── PROFILE PAGE ──
+async function loadProfilePage() {
+  if (!currentProfile) return;
+
+  // Show/hide role-specific fields
+  const role = currentProfile.role;
+  document.getElementById('mentee-fields').style.display = role === 'mentee' ? 'block' : 'none';
+  document.getElementById('mentor-fields').style.display = (role === 'mentor' || role === 'admin') ? 'block' : 'none';
+
+  // Set display name and badge
+  document.getElementById('profile-display-name').textContent = currentProfile.name || 'Your Name';
+  document.getElementById('profile-role-badge').textContent = role === 'admin' ? 'Founder · Admin' : role;
+
+  // Load extra profile data
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (data) {
+    currentProfile = { ...currentProfile, ...data };
+    document.getElementById('pf-name').value = data.name || '';
+    document.getElementById('pf-bio').value = data.bio || '';
+    document.getElementById('pf-city').value = data.city || '';
+    if (role === 'mentee') {
+      document.getElementById('pf-age').value = data.age || '';
+      document.getElementById('pf-grade').value = data.grade || '';
+      document.getElementById('pf-school').value = data.school || '';
+      document.getElementById('pf-goal').value = data.goal || '';
+    }
+    if (role === 'mentor' || role === 'admin') {
+      document.getElementById('pf-job').value = data.job || '';
+      document.getElementById('pf-giveback').value = data.giveback || '';
+    }
+
+    // Load avatar
+    if (data.avatar_config) {
+      try {
+        const parsed = typeof data.avatar_config === 'string' ? JSON.parse(data.avatar_config) : data.avatar_config;
+        Object.assign(avatarConfig, parsed);
+      } catch(e) {}
+    }
+    updateProfileAvatar();
+  }
+}
+
+async function saveProfile() {
+  if (!currentUser) return;
+  const role = currentProfile?.role;
+
+  const updates = {
+    name: document.getElementById('pf-name').value.trim(),
+    bio: document.getElementById('pf-bio').value.trim(),
+    city: document.getElementById('pf-city').value.trim(),
+  };
+
+  if (role === 'mentee') {
+    updates.age = document.getElementById('pf-age').value;
+    updates.grade = document.getElementById('pf-grade').value.trim();
+    updates.school = document.getElementById('pf-school').value.trim();
+    updates.goal = document.getElementById('pf-goal').value.trim();
+  }
+
+  if (role === 'mentor' || role === 'admin') {
+    updates.job = document.getElementById('pf-job').value.trim();
+    updates.giveback = document.getElementById('pf-giveback').value.trim();
+  }
+
+  const { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
+
+  if (!error) {
+    currentProfile = { ...currentProfile, ...updates };
+    // Update nav name
+    if (updates.name) {
+      document.getElementById('nav-name').textContent = updates.name;
+      document.getElementById('profile-display-name').textContent = updates.name;
+      document.getElementById('hero-greeting').textContent = `Welcome to Rise, ${updates.name}.`;
+      document.getElementById('nav-avatar').textContent = updates.name.charAt(0).toUpperCase();
+    }
+    showToast('Profile saved ✓');
+  } else {
+    showToast('Something went wrong — try again');
+  }
+}
+
+
 // ── STAR FIELD ──
 (function() {
   // Run stars on any screen with a star canvas
@@ -1555,5 +2135,75 @@ init();
   });
 })();
 </script>
+
+<!-- AVATAR BUILDER MODAL -->
+<div class="avatar-modal-overlay" id="avatar-modal">
+  <div class="avatar-modal">
+    <div class="modal-handle"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:4px;">Build Your Avatar</div>
+    <div style="font-size:13px;color:var(--grey);margin-bottom:6px;">Make it yours.</div>
+
+    <!-- Live preview -->
+    <div class="avatar-preview-large">
+      <svg id="builder-preview-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+    </div>
+
+    <!-- Skin tone -->
+    <div class="avatar-section-label">Skin Tone</div>
+    <div class="avatar-options" id="skin-options">
+      <div class="skin-opt selected" data-skin="#FDDBB4" style="background:#FDDBB4" onclick="selectSkin(this,'#FDDBB4')"></div>
+      <div class="skin-opt" data-skin="#F5C896" style="background:#F5C896" onclick="selectSkin(this,'#F5C896')"></div>
+      <div class="skin-opt" data-skin="#E8A87C" style="background:#E8A87C" onclick="selectSkin(this,'#E8A87C')"></div>
+      <div class="skin-opt" data-skin="#C68642" style="background:#C68642" onclick="selectSkin(this,'#C68642')"></div>
+      <div class="skin-opt" data-skin="#8D5524" style="background:#8D5524" onclick="selectSkin(this,'#8D5524')"></div>
+      <div class="skin-opt" data-skin="#5C3317" style="background:#5C3317" onclick="selectSkin(this,'#5C3317')"></div>
+    </div>
+
+    <!-- Hair style -->
+    <div class="avatar-section-label">Hair Style</div>
+    <div class="avatar-options" id="hair-options">
+      <div class="avatar-opt selected" data-hair="short" onclick="selectHair(this,'short')" title="Short">✂️</div>
+      <div class="avatar-opt" data-hair="medium" onclick="selectHair(this,'medium')" title="Medium">💇</div>
+      <div class="avatar-opt" data-hair="long" onclick="selectHair(this,'long')" title="Long">👩</div>
+      <div class="avatar-opt" data-hair="curly" onclick="selectHair(this,'curly')" title="Curly">🌀</div>
+      <div class="avatar-opt" data-hair="locs" onclick="selectHair(this,'locs')" title="Locs">🫧</div>
+      <div class="avatar-opt" data-hair="afro" onclick="selectHair(this,'afro')" title="Afro">⭕</div>
+      <div class="avatar-opt" data-hair="bun" onclick="selectHair(this,'bun')" title="Bun">🔵</div>
+      <div class="avatar-opt" data-hair="bald" onclick="selectHair(this,'bald')" title="Bald">🥚</div>
+    </div>
+
+    <!-- Hair colour -->
+    <div class="avatar-section-label">Hair Colour</div>
+    <div class="avatar-options" id="haircolor-options">
+      <div class="skin-opt selected" data-hc="#1A1008" style="background:#1A1008" onclick="selectHairColor(this,'#1A1008')"></div>
+      <div class="skin-opt" data-hc="#4A3020" style="background:#4A3020" onclick="selectHairColor(this,'#4A3020')"></div>
+      <div class="skin-opt" data-hc="#8B4513" style="background:#8B4513" onclick="selectHairColor(this,'#8B4513')"></div>
+      <div class="skin-opt" data-hc="#D4A843" style="background:#D4A843" onclick="selectHairColor(this,'#D4A843')"></div>
+      <div class="skin-opt" data-hc="#E8E8E8" style="background:#E8E8E8;border:1px solid #DDD" onclick="selectHairColor(this,'#E8E8E8')"></div>
+      <div class="skin-opt" data-hc="#FF6B9D" style="background:#FF6B9D" onclick="selectHairColor(this,'#FF6B9D')"></div>
+      <div class="skin-opt" data-hc="#7B68EE" style="background:#7B68EE" onclick="selectHairColor(this,'#7B68EE')"></div>
+      <div class="skin-opt" data-hc="#00CED1" style="background:#00CED1" onclick="selectHairColor(this,'#00CED1')"></div>
+    </div>
+
+    <!-- Shirt colour -->
+    <div class="avatar-section-label">Shirt Colour</div>
+    <div class="avatar-options" id="shirt-options">
+      <div class="shirt-opt selected" data-shirt="#B01C20" style="background:#B01C20" onclick="selectShirt(this,'#B01C20')"></div>
+      <div class="shirt-opt" data-shirt="#1E3A6E" style="background:#1E3A6E" onclick="selectShirt(this,'#1E3A6E')"></div>
+      <div class="shirt-opt" data-shirt="#2D6A4F" style="background:#2D6A4F" onclick="selectShirt(this,'#2D6A4F')"></div>
+      <div class="shirt-opt" data-shirt="#D4A843" style="background:#D4A843" onclick="selectShirt(this,'#D4A843')"></div>
+      <div class="shirt-opt" data-shirt="#4A4A4A" style="background:#4A4A4A" onclick="selectShirt(this,'#4A4A4A')"></div>
+      <div class="shirt-opt" data-shirt="#FFFFFF" style="background:#FFFFFF;border:1px solid #DDD" onclick="selectShirt(this,'#FFFFFF')"></div>
+      <div class="shirt-opt" data-shirt="#FF8C00" style="background:#FF8C00" onclick="selectShirt(this,'#FF8C00')"></div>
+      <div class="shirt-opt" data-shirt="#9B59B6" style="background:#9B59B6" onclick="selectShirt(this,'#9B59B6')"></div>
+      <div class="shirt-opt" data-shirt="#E74C3C" style="background:#E74C3C" onclick="selectShirt(this,'#E74C3C')"></div>
+      <div class="shirt-opt" data-shirt="#000000" style="background:#000000" onclick="selectShirt(this,'#000000')"></div>
+    </div>
+
+    <button class="avatar-save-btn" onclick="saveAvatar()">Save Avatar ✓</button>
+    <button style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--grey);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="closeAvatarBuilder()">Cancel</button>
+  </div>
+</div>
+
 </body>
 </html>
