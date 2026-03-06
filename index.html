@@ -2938,19 +2938,7 @@ let dragging = null; // { personId, fromTable, fromSlot }
 let journalCount = 0;
 
 // ── INIT ──
-async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    const ok = await verifyAdmin();
-    if (ok) {
-      enterClassroom();
-    } else {
-      // Has a session but not admin — sign out and show login
-      await sb.auth.signOut();
-    }
-  }
-}
+// (classroom init merged into main init)
 
 async function verifyAdmin() {
   // Try profiles table first
