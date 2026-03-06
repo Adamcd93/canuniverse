@@ -2231,41 +2231,57 @@ let journalEntries = [];
 
 // ── INIT ──
 async function init() {
-  // Check URL hash for recovery token — GitHub Pages preserves hash fragments
-  const hash = window.location.hash;
-  const params = new URLSearchParams(hash.replace('#', '?').replace('#', '&'));
-  const type = params.get('type');
-  const accessToken = params.get('access_token');
+  // Safety timeout — if anything hangs, show landing after 4 seconds
+  const safetyTimer = setTimeout(() => {
+    showScreen('landing');
+  }, 4000);
 
-  if (type === 'recovery' && accessToken) {
-    // Set the session from the URL token so updateUser works
-    const { data, error } = await sb.auth.setSession({
-      access_token: accessToken,
-      refresh_token: params.get('refresh_token') || ''
+  try {
+    // Check URL hash for recovery token
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace('#', '?').replace('#', '&'));
+    const type = params.get('type');
+    const accessToken = params.get('access_token');
+
+    if (type === 'recovery' && accessToken) {
+      const { data, error } = await sb.auth.setSession({
+        access_token: accessToken,
+        refresh_token: params.get('refresh_token') || ''
+      });
+      if (!error) {
+        clearTimeout(safetyTimer);
+        history.replaceState(null, '', window.location.pathname);
+        showScreen('reset');
+        return;
+      }
+    }
+
+    // Listen for password recovery events
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        clearTimeout(safetyTimer);
+        history.replaceState(null, '', window.location.pathname);
+        showScreen('reset');
+      }
     });
-    if (!error) {
-      // Clear the hash from the URL so it looks clean
-      history.replaceState(null, '', window.location.pathname);
-      showScreen('reset');
-      return;
-    }
-  }
 
-  // Listen for auth state changes
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      history.replaceState(null, '', window.location.pathname);
-      showScreen('reset');
-      return;
-    }
-  });
+    const { data: { session } } = await sb.auth.getSession();
+    clearTimeout(safetyTimer);
 
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await loadProfile();
-    enterApp();
-  } else {
+    if (session) {
+      currentUser = session.user;
+      try {
+        await loadProfile();
+      } catch(e) {
+        console.warn('Profile load failed, entering app anyway', e);
+      }
+      enterApp();
+    } else {
+      showScreen('landing');
+    }
+  } catch(e) {
+    clearTimeout(safetyTimer);
+    console.error('Init error:', e);
     showScreen('landing');
   }
 }
