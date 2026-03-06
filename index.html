@@ -307,18 +307,28 @@
   }
 
   /* ── APP SHELL ── */
-  #app { background: var(--light-grey); padding-bottom: 84px; }
+  #app { background: var(--light-grey); padding-bottom: 20px; }
 
   .app-nav {
     background: white;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .app-nav-top {
+    padding: 12px 20px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .app-nav-tabs {
+    display: flex;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 0 8px;
   }
 
   .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: var(--red); }
@@ -365,14 +375,7 @@
   .nav-menu-item.danger { color: var(--red); }
 
   .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: white;
-    border-top: 1px solid rgba(0,0,0,0.07);
-    display: flex;
-    padding: 6px 0;
-    padding-bottom: calc(6px + env(safe-area-inset-bottom));
-    z-index: 100;
+    display: none;
   }
 
   .nav-item {
@@ -381,17 +384,20 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 6px 4px;
+    padding: 8px 4px 6px;
     cursor: pointer;
     border: none;
+    border-bottom: 2.5px solid transparent;
     background: none;
     font-family: 'DM Sans', sans-serif;
     transition: all 0.15s;
   }
 
-  .nav-item .nav-icon { font-size: 20px; line-height: 1; }
+  .nav-item:hover .nav-label { color: var(--charcoal); }
+  .nav-item .nav-icon { font-size: 18px; line-height: 1; }
   .nav-item .nav-label { font-size: 10px; color: var(--grey); font-weight: 500; }
-  .nav-item.active .nav-label { color: var(--red); font-weight: 600; }
+  .nav-item.active .nav-label { color: var(--red); font-weight: 700; }
+  .nav-item.active { border-bottom-color: var(--red); }
 
   /* ── PAGES ── */
   .page { display: none; padding: 18px; max-width: 680px; margin: 0 auto; }
@@ -912,6 +918,733 @@
 
   .avatar-save-btn:hover { background: var(--dark-red); }
 
+
+  /* ── CLASSROOM ── */
+
+:root {
+  --red: #B01C20;
+  --dark-red: #8B1518;
+  --gold: #D4A843;
+  --dark-gold: #A8832E;
+  --chalk: #F5F0E8;
+  --chalk-dim: rgba(245,240,232,0.5);
+  --chalk-faint: rgba(245,240,232,0.15);
+  --board: #1C2E1C;
+  --board-light: #243824;
+  --floor: #2A1F14;
+  --floor-light: #3A2C1E;
+  --wood: #4A3520;
+  --wood-light: #5C4530;
+  --wall: #1A1008;
+  --table-felt: #1E3A1E;
+  --table-edge: #8B6914;
+  --white: #FFFFFF;
+  --grey: #888;
+  --shadow-deep: 0 20px 60px rgba(0,0,0,0.6);
+  --shadow-table: 0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--wall);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── LOGIN OVERLAY ── */
+#login-overlay {
+  position: fixed; inset: 0;
+  background: var(--wall);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(245,240,232,0.1);
+  border-radius: 20px;
+  padding: 44px 40px;
+  width: 360px;
+  text-align: center;
+}
+
+.login-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--chalk);
+  margin-bottom: 4px;
+}
+
+.login-logo span { color: var(--red); }
+.login-sub { font-size: 12px; color: rgba(245,240,232,0.4); margin-bottom: 32px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em; }
+.login-title { font-size: 18px; font-weight: 600; color: var(--chalk); margin-bottom: 6px; }
+.login-desc { font-size: 13px; color: rgba(245,240,232,0.5); margin-bottom: 28px; }
+
+.login-input {
+  width: 100%;
+  padding: 13px 15px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(245,240,232,0.12);
+  border-radius: 10px;
+  color: var(--chalk);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.login-input:focus { border-color: var(--red); }
+.login-input::placeholder { color: rgba(245,240,232,0.25); }
+
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.login-btn:hover { background: var(--dark-red); }
+.login-error { color: #ff6b6b; font-size: 13px; margin-top: 10px; display: none; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  background: rgba(10,8,4,0.95);
+  border-bottom: 1px solid rgba(245,240,232,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.top-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--chalk);
+}
+
+.top-logo span { color: var(--red); }
+
+.top-actions { display: flex; align-items: center; gap: 12px; }
+
+.top-btn {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.top-btn-primary { background: var(--red); color: white; }
+.top-btn-primary:hover { background: var(--dark-red); }
+.top-btn-ghost { background: rgba(245,240,232,0.08); color: var(--chalk); }
+.top-btn-ghost:hover { background: rgba(245,240,232,0.14); }
+
+.top-stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.top-stat { text-align: center; }
+.top-stat-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--gold); line-height: 1; }
+.top-stat-label { font-size: 9px; color: rgba(245,240,232,0.4); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ── MAIN CLASSROOM ── */
+.classroom {
+  padding-top: 52px;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── CHALKBOARD WALL ── */
+.chalkboard-wall {
+  background: linear-gradient(180deg, #0D0A05 0%, #1A1008 100%);
+  padding: 28px 40px 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  position: relative;
+  min-height: 220px;
+}
+
+.chalkboard-wall::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 20px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.4));
+}
+
+/* ── CHALKBOARD ── */
+.chalkboard {
+  background: linear-gradient(135deg, var(--board) 0%, var(--board-light) 50%, var(--board) 100%);
+  border: 6px solid var(--wood);
+  border-radius: 4px;
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(0,0,0,0.3);
+  width: 520px;
+  min-height: 160px;
+  padding: 20px 24px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chalkboard::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.chalk-tray {
+  position: absolute;
+  bottom: -14px; left: -6px; right: -6px;
+  height: 14px;
+  background: linear-gradient(180deg, var(--wood-light), var(--wood));
+  border-radius: 0 0 3px 3px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+}
+
+.chalk-piece {
+  height: 6px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.board-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--chalk);
+  margin-bottom: 14px;
+  opacity: 0.85;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-style: dashed;
+  text-decoration-color: rgba(245,240,232,0.3);
+}
+
+.board-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.board-stat {
+  text-align: center;
+  padding: 8px 4px;
+  border: 1px dashed rgba(245,240,232,0.2);
+  border-radius: 4px;
+}
+
+.board-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.board-stat-label {
+  font-size: 9px;
+  color: rgba(245,240,232,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+  font-family: 'DM Mono', monospace;
+}
+
+.board-line {
+  height: 1px;
+  background: rgba(245,240,232,0.1);
+  margin: 10px 0;
+}
+
+.board-note {
+  font-size: 11px;
+  color: rgba(245,240,232,0.45);
+  text-align: center;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── ADAM AT THE FRONT ── */
+.teacher-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.teacher-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.teacher-figure:hover { transform: translateY(-3px); }
+
+.teacher-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--dark-red));
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 2px rgba(212,168,67,0.3), 0 8px 24px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 24px;
+  color: white;
+  position: relative;
+}
+
+.teacher-crown {
+  position: absolute;
+  top: -14px;
+  font-size: 18px;
+}
+
+.teacher-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'DM Mono', monospace;
+  text-align: center;
+}
+
+.teacher-sublabel {
+  font-size: 10px;
+  color: rgba(245,240,232,0.4);
+  text-align: center;
+}
+
+/* ── FLOOR ── */
+.floor-area {
+  flex: 1;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 59px,
+      rgba(255,255,255,0.015) 59px,
+      rgba(255,255,255,0.015) 60px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 59px,
+      rgba(255,255,255,0.015) 59px,
+      rgba(255,255,255,0.015) 60px
+    ),
+    linear-gradient(180deg, var(--floor) 0%, var(--floor-light) 100%);
+  padding: 40px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: relative;
+}
+
+/* ── UNASSIGNED BENCH ── */
+.bench-area {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(245,240,232,0.12);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-height: 80px;
+}
+
+.bench-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(245,240,232,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 12px;
+}
+
+.bench-people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 48px;
+}
+
+.bench-people.drag-over {
+  background: rgba(212,168,67,0.05);
+  border-radius: 8px;
+}
+
+/* ── TABLES ROW ── */
+.tables-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ── TABLE ── */
+.table-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.table-label-top {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(245,240,232,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-family: 'DM Mono', monospace;
+}
+
+.table {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, var(--table-felt), #162416 70%);
+  border: 6px solid var(--table-edge);
+  box-shadow: var(--shadow-table),
+    inset 0 2px 8px rgba(255,255,255,0.05),
+    0 0 0 2px rgba(212,168,67,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.table.drag-over {
+  box-shadow: var(--shadow-table), 0 0 0 3px var(--gold), 0 0 30px rgba(212,168,67,0.3);
+  border-color: var(--gold);
+}
+
+.table.empty-table {
+  border-style: dashed;
+  border-color: rgba(212,168,67,0.2);
+  background: radial-gradient(circle, rgba(255,255,255,0.02), transparent);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.table.empty-table:hover {
+  border-color: rgba(212,168,67,0.5);
+  box-shadow: 0 0 20px rgba(212,168,67,0.1);
+}
+
+.add-table-hint {
+  text-align: center;
+  color: rgba(245,240,232,0.2);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.add-table-hint .plus { font-size: 28px; color: rgba(212,168,67,0.3); }
+
+/* Seats around table */
+.seat {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Mentor center seat */
+.mentor-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+
+.mentor-center.empty-slot {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── PERSON CHIP ── */
+.person-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: grab;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.person-chip:active { cursor: grabbing; transform: scale(1.1); opacity: 0.8; }
+.person-chip.dragging { opacity: 0.3; transform: scale(0.9); }
+
+.chip-avatar {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border: 2px solid rgba(255,255,255,0.15);
+  font-size: 14px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.chip-avatar.mentee-avatar {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #2C5F8A, #1A3F5C);
+  font-size: 13px;
+}
+
+.chip-avatar.mentor-avatar {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--red), var(--dark-red));
+  font-size: 18px;
+  border: 2px solid rgba(212,168,67,0.4);
+}
+
+.chip-name {
+  font-size: 9px;
+  color: rgba(245,240,232,0.7);
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.04em;
+  max-width: 52px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.chip-role-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0; right: 0;
+  border: 1px solid var(--floor);
+}
+
+.chip-role-dot.mentor { background: var(--gold); }
+.chip-role-dot.mentee { background: #4A9EDB; }
+
+/* Ghost drag image */
+.drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.9;
+  transform: scale(1.1);
+  display: none;
+}
+
+/* ── ADD TABLE BTN ── */
+.add-table-btn {
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  border: 2px dashed rgba(212,168,67,0.2);
+  background: transparent;
+  color: rgba(245,240,232,0.2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.add-table-btn:hover {
+  border-color: rgba(212,168,67,0.5);
+  color: rgba(245,240,232,0.5);
+  background: rgba(212,168,67,0.03);
+}
+
+.add-table-btn .plus-icon { font-size: 32px; color: rgba(212,168,67,0.4); }
+.add-table-btn .btn-text { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  position: fixed;
+  background: rgba(10,8,4,0.95);
+  border: 1px solid rgba(245,240,232,0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--chalk);
+  pointer-events: none;
+  z-index: 500;
+  display: none;
+  white-space: nowrap;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: rgba(10,8,4,0.95);
+  border: 1px solid rgba(245,240,232,0.1);
+  color: var(--chalk);
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 400;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── SAVE INDICATOR ── */
+.save-indicator {
+  font-size: 11px;
+  color: rgba(245,240,232,0.35);
+  font-family: 'DM Mono', monospace;
+}
+
+.save-indicator.saved { color: #4CAF50; }
+.save-indicator.saving { color: var(--gold); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: #1A1208;
+  border: 1px solid rgba(245,240,232,0.1);
+  border-radius: 20px;
+  padding: 32px;
+  width: 360px;
+  animation: modalIn 0.3s ease both;
+}
+
+@keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--chalk); margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: rgba(245,240,232,0.45); margin-bottom: 24px; }
+
+.modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(245,240,232,0.1);
+  border-radius: 10px;
+  color: var(--chalk);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.modal-input:focus { border-color: var(--gold); }
+
+.modal-actions { display: flex; gap: 10px; }
+
+.modal-btn {
+  flex: 1; padding: 12px;
+  border-radius: 100px;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-primary { background: var(--red); color: white; }
+.modal-btn-primary:hover { background: var(--dark-red); }
+.modal-btn-cancel { background: rgba(245,240,232,0.08); color: rgba(245,240,232,0.6); }
+.modal-btn-cancel:hover { background: rgba(245,240,232,0.14); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+  /* Remember Me */
+  .remember-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .remember-checkbox {
+    width: 16px; height: 16px;
+    accent-color: var(--red);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .remember-label {
+    font-size: 13px;
+    color: rgba(245,240,232,0.5);
+    cursor: pointer;
+    user-select: none;
+  }
+
 </style>
 </head>
 <body>
@@ -999,6 +1732,10 @@
       <label class="form-label">Password</label>
       <input class="form-input" type="password" id="login-password" placeholder="Your password" autocomplete="current-password">
     </div>
+    <div class="remember-row" style="margin-bottom:14px;margin-top:2px;">
+      <input class="remember-checkbox" type="checkbox" id="remember-me">
+      <label class="remember-label" for="remember-me">Remember my email</label>
+    </div>
     <button class="form-btn" id="login-btn" onclick="doLogin()">Sign In →</button>
     <div style="text-align:center;margin-top:14px;">
       <a onclick="showForgotPassword()" style="font-size:13px;color:var(--grey);cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--grey)'">Forgot your password?</a>
@@ -1055,14 +1792,24 @@
 <!-- APP -->
 <div id="app" class="screen">
   <div class="app-nav">
-    <div class="nav-logo">CanUniverse</div>
-    <div class="nav-center">Hey, <strong id="nav-name">there</strong></div>
-    <div style="position:relative">
-      <div class="nav-avatar" id="nav-avatar" onclick="toggleMenu()">A</div>
-      <div class="nav-menu" id="nav-menu">
-        <div class="nav-menu-item" onclick="switchPage('home');closeMenu()">🏠 Home</div>
-        <div class="nav-menu-item danger" onclick="doLogout()">Sign Out</div>
+    <div class="app-nav-top">
+      <div class="nav-logo">CanUniverse</div>
+      <div class="nav-center">Hey, <strong id="nav-name">there</strong></div>
+      <div style="position:relative">
+        <div class="nav-avatar" id="nav-avatar" onclick="toggleMenu()">A</div>
+        <div class="nav-menu" id="nav-menu">
+          <div class="nav-menu-item danger" onclick="doLogout()">Sign Out</div>
+        </div>
       </div>
+    </div>
+    <div class="app-nav-tabs">
+      <button class="nav-item active" id="tab-home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+      <button class="nav-item" id="tab-sessions" onclick="switchPage('sessions')"><span class="nav-icon">🎯</span><span class="nav-label">Sessions</span></button>
+      <button class="nav-item" id="tab-journey" onclick="switchPage('journey')"><span class="nav-icon">🌱</span><span class="nav-label">Journey</span></button>
+      <button class="nav-item" id="tab-journal" onclick="switchPage('journal')"><span class="nav-icon">📓</span><span class="nav-label">Journal</span></button>
+      <button class="nav-item" id="tab-profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
+      <button class="nav-item" id="tab-classroom" style="display:none" onclick="switchPage('classroom')"><span class="nav-icon">🏫</span><span class="nav-label">Classroom</span></button>
+      <button class="nav-item" id="tab-admin" style="display:none" onclick="switchPage('admin')"><span class="nav-icon">⚙️</span><span class="nav-label">Admin</span></button>
     </div>
   </div>
 
@@ -1357,6 +2104,81 @@
     <div style="height:12px"></div>
   </div>
 
+
+  <!-- CLASSROOM PAGE -->
+  <div id="page-classroom" class="page" style="padding:0;max-width:100%">
+
+    <!-- Classroom stats bar -->
+    <div style="background:var(--black);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;gap:20px;">
+        <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);line-height:1" id="cr-stat-mentees">0</div><div style="font-size:9px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.1em">Mentees</div></div>
+        <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);line-height:1" id="cr-stat-mentors">0</div><div style="font-size:9px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.1em">Mentors</div></div>
+        <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);line-height:1" id="cr-stat-assigned">0</div><div style="font-size:9px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.1em">Assigned</div></div>
+        <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);line-height:1" id="cr-stat-tables">0</div><div style="font-size:9px;color:rgba(245,240,232,0.4);text-transform:uppercase;letter-spacing:0.1em">Tables</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;color:rgba(245,240,232,0.35);font-family:'DM Mono',monospace" id="save-indicator">All saved ✓</div>
+        <button style="padding:7px 16px;border-radius:100px;background:var(--red);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;" onclick="crSaveAssignments()">Save Classroom</button>
+      </div>
+    </div>
+
+    <!-- Chalkboard wall -->
+    <div class="chalkboard-wall">
+      <div class="chalkboard">
+        <div class="board-title">Up & At 'Em Academy — Fall 2026</div>
+        <div class="board-stats">
+          <div class="board-stat"><div class="board-stat-num" id="cr-board-mentees">0</div><div class="board-stat-label">Mentees</div></div>
+          <div class="board-stat"><div class="board-stat-num" id="board-sessions">1</div><div class="board-stat-label">Active Session</div></div>
+          <div class="board-stat"><div class="board-stat-num" id="cr-board-journals">0</div><div class="board-stat-label">Journals</div></div>
+        </div>
+        <div class="board-line"></div>
+        <div class="board-note">"Anything is possible — and you don't have to figure it out alone."</div>
+        <div class="chalk-tray">
+          <div class="chalk-piece" style="width:28px;background:#F5F0E8;"></div>
+          <div class="chalk-piece" style="width:20px;background:#F5E8E8;"></div>
+          <div class="chalk-piece" style="width:24px;background:#E8F0F5;"></div>
+        </div>
+      </div>
+      <div class="teacher-area">
+        <div class="teacher-figure">
+          <div class="teacher-avatar"><div class="teacher-crown">👑</div>A</div>
+          <div class="teacher-label" id="cr-teacher-name">Adam</div>
+          <div class="teacher-sublabel">Founder · Admin · Mentor</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floor -->
+    <div class="floor-area">
+      <div>
+        <div class="bench-area">
+          <div class="bench-label">⬇ Unassigned — drag to a table</div>
+          <div class="bench-people" id="bench"
+            ondragover="crOnDragOver(event,'bench')"
+            ondragleave="crOnDragLeave(event,'bench')"
+            ondrop="crOnDrop(event,'bench',null,null)">
+          </div>
+        </div>
+      </div>
+      <div class="tables-row" id="tables-row"></div>
+    </div>
+
+    <!-- Add table modal -->
+    <div class="modal-overlay" id="add-table-modal">
+      <div class="modal-box">
+        <div class="modal-title">Add a New Table</div>
+        <div class="modal-sub">Give this group a name — or leave blank for a number.</div>
+        <input class="modal-input" type="text" id="table-name-input" placeholder="e.g. Table 1, The Dreamers..." maxlength="20">
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" onclick="crCloseModal()">Cancel</button>
+          <button class="modal-btn modal-btn-primary" onclick="crConfirmAddTable()">Add Table →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="drag-ghost" id="drag-ghost"></div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
@@ -1461,23 +2283,27 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+  // Pre-fill remembered email on login screen
+  if (id === 'login') {
+    const remembered = localStorage.getItem('canu_remembered_email');
+    if (remembered) {
+      document.getElementById('login-email').value = remembered;
+      document.getElementById('remember-me').checked = true;
+    }
+  }
 }
 
 function switchPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const pages = ['home','sessions','journey','journal','admin'];
-  const navItems = document.querySelectorAll('.nav-item');
-  const visiblePages = currentProfile?.role === 'admin'
-    ? ['home','sessions','journey','journal','profile','admin']
-    : ['home','sessions','journey','journal','profile'];
-  const idx = visiblePages.indexOf(id);
-  if (idx >= 0) navItems[idx]?.classList.add('active');
+  const tabEl = document.getElementById('tab-' + id);
+  if (tabEl) tabEl.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'journal') loadJournal();
   if (id === 'admin') loadAdminData();
   if (id === 'profile') loadProfilePage();
+  if (id === 'classroom') crLoadClassroom();
   closeMenu();
 }
 
@@ -1528,6 +2354,7 @@ async function doLogin() {
   const password = document.getElementById('login-password').value;
   const errEl = document.getElementById('login-error');
   const btn = document.getElementById('login-btn');
+  const rememberMe = document.getElementById('remember-me')?.checked;
 
   if (!email || !password) { showError(errEl, 'Please enter your email and password.'); return; }
 
@@ -1536,6 +2363,13 @@ async function doLogin() {
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
   if (error) { showError(errEl, 'Incorrect email or password.'); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+
+  // Save or clear remembered email
+  if (rememberMe) {
+    localStorage.setItem('canu_remembered_email', email);
+  } else {
+    localStorage.removeItem('canu_remembered_email');
+  }
 
   currentUser = data.user;
   await loadProfile();
@@ -1566,7 +2400,8 @@ function enterApp() {
   document.getElementById('hero-greeting').textContent = `Welcome to Rise, ${name}.`;
 
   if (currentProfile?.role === 'admin') {
-    document.getElementById('admin-nav').style.display = 'flex';
+    document.getElementById('tab-admin').style.display = 'flex';
+    document.getElementById('tab-classroom').style.display = 'flex';
   }
 
   showScreen('app');
@@ -2085,6 +2920,512 @@ async function doResetPassword() {
     }, 1500);
   }
 }
+
+// ── CLASSROOM JS ──
+// ── STATE ──
+let currentUser = null;
+let allProfiles = [];
+let tables = []; // [{ id, name, mentorId, menteeIds[] }]
+let dragging = null; // { personId, fromTable, fromSlot }
+let journalCount = 0;
+
+// ── INIT ──
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    const ok = await verifyAdmin();
+    if (ok) {
+      enterClassroom();
+    } else {
+      // Has a session but not admin — sign out and show login
+      await sb.auth.signOut();
+    }
+  }
+}
+
+async function verifyAdmin() {
+  // Try profiles table first
+  const { data, error } = await sb.from('profiles').select('role').eq('id', currentUser.id).single();
+  if (data?.role === 'admin') return true;
+  
+  // If no profile row exists yet, check if this is the only user / first user
+  // and auto-create admin profile
+  if (error || !data) {
+    // Try to upsert an admin profile for this user
+    const { data: upserted } = await sb.from('profiles').upsert({
+      id: currentUser.id,
+      name: currentUser.email?.split('@')[0] || 'Admin',
+      role: 'admin'
+    }, { onConflict: 'id' }).select('role').single();
+    return upserted?.role === 'admin';
+  }
+  
+  return false;
+}
+
+// ── AUTH ──
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  
+  if (!email || !password) { 
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block'; 
+    return; 
+  }
+
+  const loginBtn = document.querySelector('.login-btn');
+  loginBtn.textContent = 'Signing in...';
+  loginBtn.disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  
+  if (error) { 
+    errEl.textContent = 'Incorrect email or password.';
+    errEl.style.display = 'block';
+    loginBtn.textContent = 'Enter Classroom →';
+    loginBtn.disabled = false;
+    return; 
+  }
+
+  currentUser = data.user;
+  const isAdmin = await verifyAdmin();
+  
+  if (!isAdmin) {
+    errEl.textContent = 'This account does not have admin access.';
+    errEl.style.display = 'block';
+    loginBtn.textContent = 'Enter Classroom →';
+    loginBtn.disabled = false;
+    await sb.auth.signOut();
+    return;
+  }
+
+  enterClassroom();
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  document.getElementById('classroom').style.display = 'none';
+  document.getElementById('login-overlay').style.display = 'flex';
+}
+
+// ── ENTER CLASSROOM ──
+async function enterClassroom() {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('classroom').style.display = 'flex';
+  await crLoadData();
+  crRenderClassroom();
+}
+
+// ── LOAD DATA ──
+async function crLoadData() {
+  const { data: profiles } = await sb.from('profiles').select('*').order('name');
+  allProfiles = (profiles || []).filter(p => p.role !== 'admin');
+
+  const { data: journals } = await sb.from('journal_entries').select('id');
+  journalCount = journals?.length || 0;
+
+  // Load saved assignments from localStorage (pilot — no extra DB table needed yet)
+  const saved = localStorage.getItem('canu_classroom_tables');
+  if (saved) {
+    tables = JSON.parse(saved);
+    // Clean up any IDs that no longer exist
+    const ids = allProfiles.map(p => p.id);
+    tables = tables.map(t => ({
+      ...t,
+      mentorId: ids.includes(t.mentorId) ? t.mentorId : null,
+      menteeIds: t.menteeIds.filter(id => ids.includes(id))
+    }));
+  } else {
+    tables = [];
+  }
+
+  crUpdateStats();
+}
+
+function crUpdateStats() {
+  const mentees = allProfiles.filter(p => p.role === 'mentee');
+  const mentors = allProfiles.filter(p => p.role === 'mentor');
+  const assigned = crGetAssignedIds();
+  const assignedCount = [...assigned].filter(id => {
+    const p = allProfiles.find(x => x.id === id);
+    return p;
+  }).length;
+
+  document.getElementById('cr-stat-mentees').textContent = mentees.length;
+  document.getElementById('cr-stat-mentors').textContent = mentors.length;
+  document.getElementById('cr-stat-assigned').textContent = assignedCount;
+  document.getElementById('cr-stat-tables').textContent = tables.length;
+  document.getElementById('cr-board-mentees').textContent = mentees.length;
+  document.getElementById('cr-board-journals').textContent = journalCount;
+}
+
+function crGetAssignedIds() {
+  const ids = new Set();
+  tables.forEach(t => {
+    if (t.mentorId) ids.add(t.mentorId);
+    t.menteeIds.forEach(id => ids.add(id));
+  });
+  return ids;
+}
+
+// ── RENDER ──
+function crRenderClassroom() {
+  crRenderBench();
+  crRenderTables();
+  crUpdateStats();
+}
+
+function crRenderBench() {
+  const bench = document.getElementById('bench');
+  const assignedIds = crGetAssignedIds();
+  const unassigned = allProfiles.filter(p => !assignedIds.has(p.id));
+
+  bench.innerHTML = '';
+  if (unassigned.length === 0) {
+    bench.innerHTML = '<div style="font-size:12px;color:rgba(245,240,232,0.25);padding:8px 0;font-style:italic;">Everyone is assigned to a table 🎉</div>';
+    return;
+  }
+  unassigned.forEach(p => bench.appendChild(crCreateChip(p)));
+}
+
+function crRenderTables() {
+  const row = document.getElementById('tables-row');
+  row.innerHTML = '';
+
+  tables.forEach((table, idx) => {
+    row.appendChild(crCreateTableEl(table, idx));
+  });
+
+  // Add table button (max 5)
+  if (tables.length < 5) {
+    const addBtn = document.createElement('div');
+    addBtn.className = 'table-group';
+    addBtn.innerHTML = `
+      <div class="table-label-top" style="opacity:0">+</div>
+      <button class="add-table-btn" onclick="crOpenAddTableModal()">
+        <div class="plus-icon">+</div>
+        <div class="btn-text">Add Table</div>
+      </button>
+    `;
+    row.appendChild(addBtn);
+  }
+}
+
+function crCreateTableEl(table, idx) {
+  const group = document.createElement('div');
+  group.className = 'table-group';
+
+  const mentor = table.mentorId ? allProfiles.find(p => p.id === table.mentorId) : null;
+  const mentees = table.menteeIds.map(id => allProfiles.find(p => p.id === id)).filter(Boolean);
+
+  // Table label
+  const label = document.createElement('div');
+  label.className = 'table-label-top';
+  label.textContent = table.name || `Table ${idx + 1}`;
+  group.appendChild(label);
+
+  // Round table
+  const tableEl = document.createElement('div');
+  tableEl.className = 'table';
+  tableEl.dataset.tableId = table.id;
+
+  // Drag events for table
+  tableEl.addEventListener('dragover', (e) => crOnDragOver(e, 'table'));
+  tableEl.addEventListener('dragleave', (e) => crOnDragLeave(e, 'table'));
+  tableEl.addEventListener('drop', (e) => crOnDrop(e, 'table', table.id, null));
+
+  // Mentor center
+  const center = document.createElement('div');
+  center.className = 'mentor-center' + (mentor ? '' : ' empty-slot');
+  center.dataset.slot = 'mentor';
+  center.dataset.tableId = table.id;
+
+  if (mentor) {
+    center.appendChild(crCreateChip(mentor, true));
+  } else {
+    center.innerHTML = `
+      <div style="width:52px;height:52px;border-radius:50%;border:2px dashed rgba(212,168,67,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(212,168,67,0.25)">⭐</div>
+      <div style="font-size:9px;color:rgba(245,240,232,0.2);font-family:'DM Mono',monospace;letter-spacing:0.05em;text-align:center">Drop<br>mentor</div>
+    `;
+  }
+
+  tableEl.appendChild(center);
+
+  // Mentee seats around the table
+  const maxSeats = 5;
+  const radius = 72;
+  for (let i = 0; i < maxSeats; i++) {
+    const angle = (i / maxSeats) * 2 * Math.PI - Math.PI / 2;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+
+    const seat = document.createElement('div');
+    seat.className = 'seat';
+    seat.style.left = `calc(50% + ${x}px - 26px)`;
+    seat.style.top = `calc(50% + ${y}px - 26px)`;
+
+    if (mentees[i]) {
+      seat.appendChild(crCreateChip(mentees[i]));
+    } else {
+      seat.innerHTML = `<div style="width:40px;height:40px;border-radius:50%;border:1px dashed rgba(245,240,232,0.08)"></div>`;
+    }
+
+    tableEl.appendChild(seat);
+  }
+
+  group.appendChild(tableEl);
+
+  // Remove table button
+  const removeBtn = document.createElement('button');
+  removeBtn.style.cssText = 'background:none;border:none;color:rgba(245,240,232,0.2);font-size:11px;cursor:pointer;font-family:"DM Mono",monospace;letter-spacing:0.05em;transition:color 0.2s;padding:4px;';
+  removeBtn.textContent = '× remove table';
+  removeBtn.onmouseover = () => removeBtn.style.color = '#ff6b6b';
+  removeBtn.onmouseout = () => removeBtn.style.color = 'rgba(245,240,232,0.2)';
+  removeBtn.onclick = () => crRemoveTable(table.id);
+  group.appendChild(removeBtn);
+
+  return group;
+}
+
+function crCreateChip(person, isMentor = false) {
+  const chip = document.createElement('div');
+  chip.className = 'person-chip';
+  chip.draggable = true;
+  chip.dataset.personId = person.id;
+
+  const isActuallyMentor = person.role === 'mentor';
+  const avatarClass = isActuallyMentor ? 'mentor-avatar' : 'mentee-avatar';
+  const dotClass = isActuallyMentor ? 'mentor' : 'mentee';
+  const initial = (person.name || '?').charAt(0).toUpperCase();
+  const shortName = (person.name || 'Unknown').split(' ')[0];
+
+  chip.innerHTML = `
+    <div class="chip-avatar ${avatarClass}">
+      ${initial}
+      <div class="chip-role-dot ${dotClass}"></div>
+    </div>
+    <div class="chip-name">${shortName}</div>
+  `;
+
+  chip.addEventListener('dragstart', (e) => crOnDragStart(e, person));
+  chip.addEventListener('dragend', onDragEnd);
+
+  // Tooltip
+  chip.addEventListener('mouseenter', (e) => showTooltip(e, `${person.name} · ${person.role}`));
+  chip.addEventListener('mouseleave', hideTooltip);
+
+  return chip;
+}
+
+// ── DRAG & DROP ──
+function crOnDragStart(e, person) {
+  dragging = { personId: person.id };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', person.id);
+
+  setTimeout(() => {
+    document.querySelectorAll(`[data-person-id="${person.id}"]`).forEach(el => el.classList.add('dragging'));
+  }, 0);
+}
+
+function crOnDragEnd(e) {
+  document.querySelectorAll('.person-chip').forEach(el => el.classList.remove('dragging'));
+  dragging = null;
+}
+
+function crOnDragOver(e, type) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (type === 'table') {
+    e.currentTarget.classList.add('drag-over');
+  } else if (type === 'bench') {
+    e.currentTarget.classList.add('drag-over');
+  }
+}
+
+function crOnDragLeave(e, type) {
+  if (type === 'table') e.currentTarget.classList.remove('drag-over');
+  if (type === 'bench') e.currentTarget.classList.remove('drag-over');
+}
+
+function crOnDrop(e, type, tableId, slot) {
+  e.preventDefault();
+  document.querySelectorAll('.table').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.bench-people').forEach(el => el.classList.remove('drag-over'));
+
+  const personId = e.dataTransfer.getData('text/plain');
+  if (!personId) return;
+
+  const person = allProfiles.find(p => p.id === personId);
+  if (!person) return;
+
+  // Remove from current location
+  crRemovePersonFromEverywhere(personId);
+
+  if (type === 'bench') {
+    // Just leave unassigned — already removed
+  } else if (type === 'table' && tableId) {
+    const table = tables.find(t => t.id === tableId);
+    if (!table) return;
+
+    if (person.role === 'mentor') {
+      // If table already has mentor, swap back old mentor to bench
+      if (table.mentorId && table.mentorId !== personId) {
+        // old mentor goes back to unassigned (already removed above)
+      }
+      table.mentorId = personId;
+    } else {
+      // Mentee — add to table if space
+      if (table.menteeIds.length < 5) {
+        table.menteeIds.push(personId);
+      } else {
+        showToast('This table is full — max 5 mentees');
+        return;
+      }
+    }
+  }
+
+  crRenderClassroom();
+  crSetSaveIndicator('unsaved');
+}
+
+function crRemovePersonFromEverywhere(personId) {
+  tables.forEach(t => {
+    if (t.mentorId === personId) t.mentorId = null;
+    t.menteeIds = t.menteeIds.filter(id => id !== personId);
+  });
+}
+
+// ── TABLES ──
+let addTableModalOpen = false;
+
+function crOpenAddTableModal() {
+  document.getElementById('add-table-modal').classList.add('open');
+  document.getElementById('table-name-input').value = '';
+  document.getElementById('table-name-input').focus();
+}
+
+function crCloseModal() {
+  document.getElementById('add-table-modal').classList.remove('open');
+}
+
+function crConfirmAddTable() {
+  const name = document.getElementById('table-name-input').value.trim() || `Table ${tables.length + 1}`;
+  tables.push({ id: Date.now().toString(), name, mentorId: null, menteeIds: [] });
+  crCloseModal();
+  crRenderClassroom();
+  crSetSaveIndicator('unsaved');
+}
+
+function crRemoveTable(tableId) {
+  const table = tables.find(t => t.id === tableId);
+  if (!table) return;
+  // People go back to bench (unassigned) automatically since we remove from tables
+  tables = tables.filter(t => t.id !== tableId);
+  crRenderClassroom();
+  crSetSaveIndicator('unsaved');
+}
+
+// ── SAVE ──
+async function crSaveAssignments() {
+  crSetSaveIndicator('saving');
+  localStorage.setItem('canu_classroom_tables', JSON.stringify(tables));
+
+  // Update mentor_id on profiles in Supabase
+  for (const table of tables) {
+    if (table.mentorId) {
+      for (const menteeId of table.menteeIds) {
+        await sb.from('profiles').update({ mentor_id: table.mentorId }).eq('id', menteeId);
+      }
+    }
+    // Clear mentor_id for unassigned mentees
+  }
+  const assignedIds = crGetAssignedIds();
+  const unassigned = allProfiles.filter(p => p.role === 'mentee' && !assignedIds.has(p.id));
+  for (const p of unassigned) {
+    await sb.from('profiles').update({ mentor_id: null }).eq('id', p.id);
+  }
+
+  crSetSaveIndicator('saved');
+  showToast('Classroom saved ✓');
+}
+
+function crSetSaveIndicator(state) {
+  const el = document.getElementById('save-indicator');
+  if (state === 'saved') { el.textContent = 'All saved ✓'; el.className = 'save-indicator saved'; }
+  else if (state === 'saving') { el.textContent = 'Saving...'; el.className = 'save-indicator saving'; }
+  else { el.textContent = 'Unsaved changes'; el.className = 'save-indicator'; }
+}
+
+// ── TOOLTIP ──
+function showTooltip(e, text) {
+  const t = document.getElementById('tooltip');
+  t.textContent = text;
+  t.style.display = 'block';
+  t.style.left = (e.clientX + 12) + 'px';
+  t.style.top = (e.clientY - 32) + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+
+document.addEventListener('mousemove', (e) => {
+  const t = document.getElementById('tooltip');
+  if (t.style.display === 'block') {
+    t.style.left = (e.clientX + 12) + 'px';
+    t.style.top = (e.clientY - 32) + 'px';
+  }
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') crCloseModal();
+  if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); crSaveAssignments(); }
+});
+
+document.getElementById('table-name-input')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') crConfirmAddTable();
+});
+
+// ── START ──
+
+// ── CLASSROOM INTEGRATION ──
+let crLoaded = false;
+async function crLoadClassroom() {
+  if (!crLoaded) {
+    await crLoadData();
+    crRenderClassroom();
+    crLoaded = true;
+  }
+  // Update teacher name
+  const nameEl = document.getElementById('cr-teacher-name');
+  if (nameEl && currentProfile?.name) nameEl.textContent = currentProfile.name;
+}
+
+// Keyboard shortcut for classroom save
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+    const classroomPage = document.getElementById('page-classroom');
+    if (classroomPage && classroomPage.classList.contains('active')) {
+      e.preventDefault();
+      crSaveAssignments();
+    }
+  }
+});
+
 
 // ── STAR FIELD ──
 (function() {
