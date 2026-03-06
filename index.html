@@ -83,18 +83,21 @@
 
   .landing-bg {
     position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(176,28,32,0.45) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 20%, rgba(212,168,67,0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 60% 85%, rgba(176,28,32,0.2) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 50% 60%, rgba(176,28,32,0.25) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 80%, rgba(212,168,67,0.08) 0%, transparent 40%);
   }
 
   .landing-grid {
     position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 60px 60px;
+    overflow: hidden;
+  }
+
+  /* Star field canvas sits behind content */
+  #star-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .landing-content { position: relative; z-index: 2; max-width: 520px; animation: fadeUp 0.6s ease both; }
@@ -218,7 +221,7 @@
 
   .form-input:focus { border-color: var(--red); background: white; }
 
-  .role-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
   .role-btn {
     padding: 12px 6px;
@@ -629,7 +632,9 @@
 <!-- LANDING -->
 <div id="landing" class="screen">
   <div class="landing-bg"></div>
-  <div class="landing-grid"></div>
+  <div class="landing-grid">
+    <canvas id="star-canvas"></canvas>
+  </div>
   <div class="landing-content">
     <div class="canu-badge">CanU Canada &nbsp;·&nbsp; Up & At 'Em Academy</div>
     <h1 class="landing-title">Can<span>U</span>niverse</h1>
@@ -674,10 +679,7 @@
           <span class="role-emoji">⭐</span>
           <span class="role-label">Mentor</span>
         </div>
-        <div class="role-btn" onclick="selectRole(this,'admin')">
-          <span class="role-emoji">🔑</span>
-          <span class="role-label">Admin</span>
-        </div>
+
       </div>
     </div>
     <button class="form-btn" id="signup-btn" onclick="doSignup()">Create Account →</button>
@@ -1315,6 +1317,142 @@ function showToast(msg) {
 
 // ── START ──
 init();
+
+// ── STAR FIELD ──
+(function() {
+  const canvas = document.getElementById('star-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W, H, stars = [], animId;
+  const NUM_STARS = 280;
+  const SPEED = 0.00055; // warp speed factor
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeStar() {
+    return {
+      x: (Math.random() - 0.5) * 2,   // -1 to 1 (centered coords)
+      y: (Math.random() - 0.5) * 2,
+      z: Math.random(),                 // depth 0=far 1=close
+      px: 0, py: 0                      // previous projected position
+    };
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < NUM_STARS; i++) {
+      const s = makeStar();
+      // Spread z so not all stars rush in at once
+      s.z = Math.random();
+      stars.push(s);
+    }
+  }
+
+  function project(s) {
+    // Perspective projection — stars fly toward viewer as z decreases
+    const fov = 0.5;
+    const px = (s.x / (s.z + fov)) * W * 0.8 + W / 2;
+    const py = (s.y / (s.z + fov)) * H * 0.8 + H / 2;
+    return { px, py };
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0)';
+    ctx.clearRect(0, 0, W, H);
+
+    stars.forEach(s => {
+      // Save old projected position
+      const old = project(s);
+
+      // Move star toward viewer
+      s.z -= SPEED * (1 + s.z * 2); // faster when closer
+
+      if (s.z <= 0) {
+        // Reset star to far distance
+        Object.assign(s, makeStar());
+        s.z = 0.98;
+        return;
+      }
+
+      const cur = project(s);
+
+      // Size grows as star approaches
+      const size = Math.max(0.3, (1 - s.z) * 2.8);
+
+      // Brightness grows as star approaches
+      const alpha = Math.min(1, (1 - s.z) * 1.4);
+
+      // Colour: mostly white, occasional warm gold or red tint
+      let color;
+      const tint = s.tint || (s.tint = Math.random());
+      if (tint > 0.96) color = `rgba(212,168,67,${alpha})`;       // gold
+      else if (tint > 0.93) color = `rgba(220,100,100,${alpha})`; // warm red
+      else color = `rgba(245,240,248,${alpha})`;                   // white-blue
+
+      // Draw streak from old to new position
+      const dx = cur.px - old.px;
+      const dy = cur.py - old.py;
+      const len = Math.sqrt(dx*dx + dy*dy);
+
+      if (len > 0.4 && (1 - s.z) > 0.3) {
+        // Draw a streak for closer/faster stars
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size * 0.7;
+        ctx.moveTo(old.px, old.py);
+        ctx.lineTo(cur.px, cur.py);
+        ctx.stroke();
+      } else {
+        // Draw a dot for distant stars
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(cur.px, cur.py, size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Bright core for close stars
+      if ((1 - s.z) > 0.7) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
+        ctx.arc(cur.px, cur.py, size * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  function start() {
+    if (canvas.offsetWidth === 0) { setTimeout(start, 100); return; }
+    resize();
+    initStars();
+    draw();
+  }
+
+  window.addEventListener('resize', () => {
+    resize();
+  });
+
+  // Only run when landing screen is visible
+  const observer = new MutationObserver(() => {
+    const landing = document.getElementById('landing');
+    if (landing && landing.classList.contains('active')) {
+      if (!animId) start();
+    } else {
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+    }
+  });
+
+  observer.observe(document.getElementById('landing'), { attributes: true, attributeFilter: ['class'] });
+
+  // Start immediately if landing is active
+  const landing = document.getElementById('landing');
+  if (landing && landing.classList.contains('active')) start();
+})();
 </script>
 </body>
 </html>
