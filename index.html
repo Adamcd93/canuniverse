@@ -102,6 +102,40 @@
 
   .landing-content { position: relative; z-index: 2; max-width: 520px; animation: fadeUp 0.6s ease both; }
 
+  /* Stars on auth screens */
+  .auth-stars {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #login, #signup, #forgot {
+    background: var(--black) !important;
+  }
+
+  #login .auth-card, #signup .auth-card, #forgot .auth-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(245,240,232,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  #login .auth-logo, #signup .auth-logo, #forgot .auth-logo { color: white; }
+  #login .auth-title, #signup .auth-title, #forgot .auth-title { color: white; }
+  #login .auth-sub, #signup .auth-sub, #forgot .auth-sub { color: rgba(255,255,255,0.45); }
+  #login .auth-org, #signup .auth-org, #forgot .auth-org { color: rgba(255,255,255,0.25); }
+  #login .form-label, #signup .form-label, #forgot .form-label { color: rgba(255,255,255,0.6); }
+  #login .form-input, #signup .form-input, #forgot .form-input { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: white; }
+  #login .form-input::placeholder, #signup .form-input::placeholder, #forgot .form-input::placeholder { color: rgba(255,255,255,0.25); }
+  #login .form-input:focus, #signup .form-input:focus, #forgot .form-input:focus { border-color: var(--red); background: rgba(255,255,255,0.1); }
+  #login .auth-switch, #signup .auth-switch, #forgot .auth-switch { color: rgba(255,255,255,0.35); }
+  #login .auth-switch a, #signup .auth-switch a, #forgot .auth-switch a { color: rgba(255,255,255,0.7); }
+  #signup .role-btn { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+  #signup .role-btn .role-label { color: rgba(255,255,255,0.5); }
+  #signup .role-btn.selected { background: rgba(176,28,32,0.2); border-color: var(--red); }
+  #signup .role-btn.selected .role-label { color: white; }
+
   .canu-badge {
     display: inline-block;
     background: var(--red);
@@ -649,8 +683,9 @@
 </div>
 
 <!-- SIGN UP -->
-<div id="signup" class="screen">
-  <div class="auth-card" style="margin:auto">
+<div id="signup" class="screen" style="position:relative;overflow:hidden">
+  <canvas class="auth-stars" id="signup-canvas"></canvas>
+  <div class="auth-card" style="margin:auto;position:relative;z-index:2">
     <div class="auth-logo">CanUniverse</div>
     <div class="auth-org">UP & AT 'EM ACADEMY · CANU CANADA</div>
     <div class="auth-title">Create your account</div>
@@ -688,8 +723,9 @@
 </div>
 
 <!-- LOGIN -->
-<div id="login" class="screen">
-  <div class="auth-card" style="margin:auto">
+<div id="login" class="screen" style="position:relative;overflow:hidden">
+  <canvas class="auth-stars" id="login-canvas"></canvas>
+  <div class="auth-card" style="margin:auto;position:relative;z-index:2">
     <div class="auth-logo">CanUniverse</div>
     <div class="auth-org">UP & AT 'EM ACADEMY · CANU CANADA</div>
     <div class="auth-title">Welcome back</div>
@@ -712,8 +748,9 @@
 </div>
 
 <!-- FORGOT PASSWORD -->
-<div id="forgot" class="screen">
-  <div class="auth-card" style="margin:auto">
+<div id="forgot" class="screen" style="position:relative;overflow:hidden">
+  <canvas class="auth-stars" id="forgot-canvas"></canvas>
+  <div class="auth-card" style="margin:auto;position:relative;z-index:2">
     <div class="auth-logo">CanUniverse</div>
     <div class="auth-org">UP & AT 'EM ACADEMY · CANU CANADA</div>
     <div class="auth-title">Reset your password</div>
@@ -1378,20 +1415,21 @@ init();
 
 // ── STAR FIELD ──
 (function() {
-  const canvas = document.getElementById('star-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  // Run stars on any screen with a star canvas
+  function initStarField(canvas) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
 
-  let W, H, stars = [], animId;
-  const NUM_STARS = 280;
-  const SPEED = 0.00055; // warp speed factor
+    let W, H, stars = [], animId;
+    const NUM_STARS = 280;
+    const SPEED = 0.00055;
 
-  function resize() {
+    function resize() {
     W = canvas.width = canvas.offsetWidth;
     H = canvas.height = canvas.offsetHeight;
   }
 
-  function makeStar() {
+    function makeStar() {
     return {
       x: (Math.random() - 0.5) * 2,   // -1 to 1 (centered coords)
       y: (Math.random() - 0.5) * 2,
@@ -1400,7 +1438,7 @@ init();
     };
   }
 
-  function initStars() {
+    function initStars() {
     stars = [];
     for (let i = 0; i < NUM_STARS; i++) {
       const s = makeStar();
@@ -1410,7 +1448,7 @@ init();
     }
   }
 
-  function project(s) {
+    function project(s) {
     // Perspective projection — stars fly toward viewer as z decreases
     const fov = 0.5;
     const px = (s.x / (s.z + fov)) * W * 0.8 + W / 2;
@@ -1418,7 +1456,7 @@ init();
     return { px, py };
   }
 
-  function draw() {
+    function draw() {
     ctx.fillStyle = 'rgba(0,0,0,0)';
     ctx.clearRect(0, 0, W, H);
 
@@ -1484,32 +1522,37 @@ init();
     animId = requestAnimationFrame(draw);
   }
 
-  function start() {
+    function start() {
     if (canvas.offsetWidth === 0) { setTimeout(start, 100); return; }
     resize();
     initStars();
     draw();
   }
 
-  window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
     resize();
   });
 
-  // Only run when landing screen is visible
-  const observer = new MutationObserver(() => {
-    const landing = document.getElementById('landing');
-    if (landing && landing.classList.contains('active')) {
-      if (!animId) start();
-    } else {
-      if (animId) { cancelAnimationFrame(animId); animId = null; }
-    }
+    // Watch for screen visibility
+    const screenEl = canvas.closest('.screen');
+    if (!screenEl) return;
+
+    const observer = new MutationObserver(() => {
+      if (screenEl.classList.contains('active')) {
+        if (!animId) start();
+      } else {
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+      }
+    });
+
+    observer.observe(screenEl, { attributes: true, attributeFilter: ['class'] });
+    if (screenEl.classList.contains('active')) start();
+  }
+
+  // Init on all star canvases
+  ['star-canvas', 'login-canvas', 'signup-canvas', 'forgot-canvas'].forEach(id => {
+    initStarField(document.getElementById(id));
   });
-
-  observer.observe(document.getElementById('landing'), { attributes: true, attributeFilter: ['class'] });
-
-  // Start immediately if landing is active
-  const landing = document.getElementById('landing');
-  if (landing && landing.classList.contains('active')) start();
 })();
 </script>
 </body>
