@@ -683,21 +683,8 @@
     width: 100px; height: 100px;
   }
 
-  .avatar-svg-wrap {
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid rgba(212,168,67,0.5);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    background: #f5e6d3;
-    cursor: pointer;
-    transition: transform 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  
 
-  .avatar-svg-wrap:hover { transform: scale(1.05); }
 
   .profile-display-name {
     font-family: 'Playfair Display', serif;
@@ -724,23 +711,7 @@
     margin-bottom: 14px;
   }
 
-  .profile-edit-avatar-btn {
-    display: inline-block;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-    position: relative;
-    z-index: 1;
-  }
 
-  .profile-edit-avatar-btn:hover { background: rgba(255,255,255,0.18); color: white; }
 
   .profile-section {
     background: white;
@@ -833,22 +804,8 @@
   
   
 
-  .avatar-save-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--red);
-    color: white;
-    border: none;
-    border-radius: 100px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.2s;
-  }
+  
 
-  .avatar-save-btn:hover { background: var(--dark-red); }
 
 
   /* ── CLASSROOM ── */
@@ -1967,11 +1924,6 @@ body {
   <!-- PROFILE -->
   <div id="page-profile" class="page">
     <div class="profile-hero">
-      <div class="profile-avatar-display">
-        <div class="avatar-svg-wrap" id="profile-avatar-display" onclick="openAvatarBuilder()">
-          
-        </div>
-      </div>
       <div class="profile-display-name" id="profile-display-name">Adam</div>
       <div class="profile-role-badge" id="profile-role-badge">Admin</div><br>
       
@@ -2544,127 +2496,6 @@ async function loadAdminData() {
   `).join('');
 }
 
-// ── AVATAR BUILDER ──
-let avatarConfig = { gender:'male', hair:'m1', skin:'#FDDBB4', hairColor:'#1A1008', shirt:'#B01C20' };
-
-function drawAvatar(svgEl, cfg, size=100) {
-  if (!svgEl) return;
-  const s=size, cx=s/2, headY=s*0.30, headR=s*0.22, neckH=s*0.08;
-  const mHair = {
-    m1: `<circle cx="${cx}" cy="${headY}" r="${headR}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.4}" rx="${headR*0.85}" ry="${headR*0.72}" fill="${cfg.skin}"/>`,
-    m2: `<circle cx="${cx}" cy="${headY}" r="${headR*1.05}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.5}" rx="${headR*0.82}" ry="${headR*0.62}" fill="${cfg.skin}"/><rect x="${cx-headR*0.45}" y="${headY-headR*0.15}" width="${headR*0.9}" height="${headR*0.45}" rx="${headR*0.2}" fill="${cfg.hairColor}"/>`,
-    m3: `<circle cx="${cx}" cy="${headY-headR*0.1}" r="${headR*1.15}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.45}" rx="${headR*0.78}" ry="${headR*0.65}" fill="${cfg.skin}"/>`,
-    m4: `<ellipse cx="${cx}" cy="${headY-headR*0.2}" rx="${headR*1.3}" ry="${headR*1.1}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.5}" rx="${headR*0.8}" ry="${headR*0.62}" fill="${cfg.skin}"/>`,
-    m5: ``
-  };
-  const fHair = {
-    f1: `<circle cx="${cx}" cy="${headY}" r="${headR*1.05}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.42}" rx="${headR*0.82}" ry="${headR*0.65}" fill="${cfg.skin}"/><rect x="${cx-headR*1.1}" y="${headY-headR*0.1}" width="${headR*0.38}" height="${headR*1.7}" rx="${headR*0.19}" fill="${cfg.hairColor}"/><rect x="${cx+headR*0.72}" y="${headY-headR*0.1}" width="${headR*0.38}" height="${headR*1.7}" rx="${headR*0.19}" fill="${cfg.hairColor}"/>`,
-    f2: `<circle cx="${cx}" cy="${headY}" r="${headR*1.05}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.42}" rx="${headR*0.82}" ry="${headR*0.65}" fill="${cfg.skin}"/><rect x="${cx-headR*1.08}" y="${headY-headR*0.1}" width="${headR*0.36}" height="${headR*0.95}" rx="${headR*0.18}" fill="${cfg.hairColor}"/><rect x="${cx+headR*0.72}" y="${headY-headR*0.1}" width="${headR*0.36}" height="${headR*0.95}" rx="${headR*0.18}" fill="${cfg.hairColor}"/>`,
-    f3: `<circle cx="${cx}" cy="${headY}" r="${headR*1.02}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.42}" rx="${headR*0.82}" ry="${headR*0.65}" fill="${cfg.skin}"/><circle cx="${cx}" cy="${headY-headR*1.22}" r="${headR*0.38}" fill="${cfg.hairColor}"/>`,
-    f4: `<ellipse cx="${cx}" cy="${headY-headR*0.05}" rx="${headR*1.22}" ry="${headR*1.05}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.48}" rx="${headR*0.78}" ry="${headR*0.62}" fill="${cfg.skin}"/>`,
-    f5: `<circle cx="${cx}" cy="${headY}" r="${headR*1.05}" fill="${cfg.hairColor}"/><ellipse cx="${cx}" cy="${headY+headR*0.42}" rx="${headR*0.82}" ry="${headR*0.65}" fill="${cfg.skin}"/><rect x="${cx-headR*1.08}" y="${headY-headR*0.05}" width="${headR*0.28}" height="${headR*1.8}" rx="${headR*0.14}" fill="${cfg.hairColor}"/><rect x="${cx+headR*0.72}" y="${headY-headR*0.05}" width="${headR*0.28}" height="${headR*1.8}" rx="${headR*0.14}" fill="${cfg.hairColor}"/>`
-  };
-  const allHair = {...mHair,...fHair};
-  const hair = allHair[cfg.hair] || '';
-  const bodyY = cfg.gender==='female' ? s*0.84 : s*0.88;
-  svgEl.innerHTML = `
-    <rect width="${s}" height="${s}" fill="transparent"/>
-    <ellipse cx="${cx}" cy="${bodyY}" rx="${s*0.34}" ry="${s*0.26}" fill="${cfg.shirt}"/>
-    <rect x="${cx-s*0.06}" y="${headY+headR-2}" width="${s*0.12}" height="${neckH+4}" rx="3" fill="${cfg.skin}"/>
-    <circle cx="${cx}" cy="${headY}" r="${headR}" fill="${cfg.skin}"/>
-    ${hair}
-    <circle cx="${cx-headR*0.35}" cy="${headY}" r="${headR*0.1}" fill="#2C1810"/>
-    <circle cx="${cx+headR*0.35}" cy="${headY}" r="${headR*0.1}" fill="#2C1810"/>
-    <circle cx="${cx-headR*0.32}" cy="${headY-headR*0.04}" r="${headR*0.04}" fill="white"/>
-    <circle cx="${cx+headR*0.32}" cy="${headY-headR*0.04}" r="${headR*0.04}" fill="white"/>
-    <path d="M${cx-headR*0.22} ${headY+headR*0.42} Q${cx} ${headY+headR*0.58} ${cx+headR*0.22} ${headY+headR*0.42}" fill="none" stroke="#C0856A" stroke-width="${s*0.018}" stroke-linecap="round"/>
-  `;
-}
-
-function openAvatarBuilder() {
-  const modal = document.getElementById('avatar-builder-modal');
-  if (!modal) return;
-  syncAvatarUI();
-  updateBuilderPreview();
-  modal.classList.add('open');
-}
-
-function closeAvatarBuilder() {
-  const modal = document.getElementById('avatar-builder-modal');
-  if (modal) modal.classList.remove('open');
-}
-
-function updateBuilderPreview() {
-  drawAvatar(document.getElementById('builder-preview'), avatarConfig, 90);
-  const profileSvg = document.getElementById('profile-avatar-svg');
-  if (profileSvg) drawAvatar(profileSvg, avatarConfig, 90);
-}
-
-function selectSkin(el, val) {
-  document.querySelectorAll('.skin-opt[data-skin]').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected'); avatarConfig.skin = val; updateBuilderPreview();
-}
-function selectHair(el, val) {
-  document.querySelectorAll('.avatar-opt[data-hair]').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected'); avatarConfig.hair = val; updateBuilderPreview();
-}
-function selectHairColor(el, val) {
-  document.querySelectorAll('.skin-opt[data-hc]').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected'); avatarConfig.hairColor = val; updateBuilderPreview();
-}
-function selectShirt(el, val) {
-  document.querySelectorAll('.shirt-opt[data-shirt]').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected'); avatarConfig.shirt = val; updateBuilderPreview();
-}
-function selectGender(gender) {
-  avatarConfig.gender = gender;
-  const hairContainer = document.getElementById('hair-options');
-  if (!hairContainer) return;
-  if (gender === 'male') {
-    hairContainer.innerHTML = `
-      <div class="avatar-opt selected" data-hair="m1" onclick="selectHair(this,'m1')" title="Short"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/><circle cx="14" cy="19" r="1.5" fill="#1A1008"/><circle cx="22" cy="19" r="1.5" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="m2" onclick="selectHair(this,'m2')" title="Fade"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="17" r="13" fill="#1A1008"/><ellipse cx="18" cy="23" rx="10" ry="8" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="m3" onclick="selectHair(this,'m3')" title="Curly"><svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="16" rx="13" ry="12" fill="#1A1008"/><circle cx="6" cy="18" r="5" fill="#1A1008"/><circle cx="30" cy="18" r="5" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="m4" onclick="selectHair(this,'m4')" title="Afro"><svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="15" rx="16" ry="14" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="m5" onclick="selectHair(this,'m5')" title="Bald"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="#E8C99A"/></svg></div>`;
-    avatarConfig.hair = 'm1';
-  } else {
-    hairContainer.innerHTML = `
-      <div class="avatar-opt selected" data-hair="f1" onclick="selectHair(this,'f1')" title="Long"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="15" r="12" fill="#1A1008"/><rect x="4" y="14" width="6" height="18" rx="3" fill="#1A1008"/><rect x="26" y="14" width="6" height="18" rx="3" fill="#1A1008"/><ellipse cx="18" cy="20" rx="10" ry="9" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="f2" onclick="selectHair(this,'f2')" title="Bob"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="15" r="12" fill="#1A1008"/><rect x="4" y="14" width="6" height="10" rx="3" fill="#1A1008"/><rect x="26" y="14" width="6" height="10" rx="3" fill="#1A1008"/><ellipse cx="18" cy="20" rx="10" ry="9" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="f3" onclick="selectHair(this,'f3')" title="Bun"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="17" r="12" fill="#1A1008"/><ellipse cx="18" cy="21" rx="10" ry="9" fill="#E8C99A"/><circle cx="18" cy="5" r="5" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="f4" onclick="selectHair(this,'f4')" title="Curly"><svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="14" rx="14" ry="12" fill="#1A1008"/><circle cx="4" cy="17" r="5" fill="#1A1008"/><circle cx="32" cy="17" r="5" fill="#1A1008"/><ellipse cx="18" cy="21" rx="10" ry="9" fill="#E8C99A"/></svg></div>
-      <div class="avatar-opt" data-hair="f5" onclick="selectHair(this,'f5')" title="Locs"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="15" r="12" fill="#1A1008"/><rect x="3" y="15" width="5" height="17" rx="2.5" fill="#1A1008"/><rect x="27" y="15" width="5" height="17" rx="2.5" fill="#1A1008"/><ellipse cx="18" cy="20" rx="10" ry="9" fill="#E8C99A"/></svg></div>`;
-    avatarConfig.hair = 'f1';
-  }
-  const gm = document.getElementById('gender-male');
-  const gf = document.getElementById('gender-female');
-  if (gm) gm.classList.toggle('selected', gender==='male');
-  if (gf) gf.classList.toggle('selected', gender==='female');
-  updateBuilderPreview();
-}
-
-function syncAvatarUI() {
-  selectGender(avatarConfig.gender || 'male');
-  document.querySelectorAll('.skin-opt[data-skin]').forEach(el => el.classList.toggle('selected', el.dataset.skin === avatarConfig.skin));
-  document.querySelectorAll('.skin-opt[data-hc]').forEach(el => el.classList.toggle('selected', el.dataset.hc === avatarConfig.hairColor));
-  document.querySelectorAll('.shirt-opt[data-shirt]').forEach(el => el.classList.toggle('selected', el.dataset.shirt === avatarConfig.shirt));
-}
-
-async function saveAvatar() {
-  if (!currentUser) return;
-  const btn = document.querySelector('.avatar-save-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
-  const configStr = JSON.stringify(avatarConfig);
-  const { error } = await sb.from('profiles').update({ avatar_config: configStr }).eq('id', currentUser.id);
-  if (!error) {
-    const profileSvg = document.getElementById('profile-avatar-svg');
-    if (profileSvg) drawAvatar(profileSvg, avatarConfig, 90);
-    closeAvatarBuilder();
-    showToast('Avatar saved!');
-  }
-  if (btn) { btn.disabled = false; btn.textContent = 'Save Avatar ✓'; }
-}
 
 // ── TOAST ──
 function showToast(msg) {
@@ -2746,8 +2577,6 @@ async function loadProfilePage() {
       document.getElementById('pf-job').value = data.job || '';
       document.getElementById('pf-giveback').value = data.giveback || '';
     }
-
-    updateProfileAvatar();
   }
 }
 
@@ -3413,72 +3242,6 @@ document.addEventListener('keydown', (e) => {
   });
 })();
 </script>
-
-
-    <!-- Live preview -->
-    <div style="display:flex;justify-content:center;margin-bottom:16px;">
-      <div style="width:90px;height:90px;border-radius:50%;border:3px solid #D4A843;overflow:hidden;background:#F9F5EE;">
-        <svg id="builder-preview" width="90" height="90" viewBox="0 0 90 90"></svg>
-      </div>
-    </div>
-
-    <!-- Skin Tone -->
-    <div class="avatar-section-label">Skin Tone</div>
-    <div class="avatar-options" id="skin-options">
-      <div class="skin-opt selected" data-skin="#FDDBB4" style="background:#FDDBB4" onclick="selectSkin(this,'#FDDBB4')"></div>
-      <div class="skin-opt" data-skin="#F5C896" style="background:#F5C896" onclick="selectSkin(this,'#F5C896')"></div>
-      <div class="skin-opt" data-skin="#E8A87C" style="background:#E8A87C" onclick="selectSkin(this,'#E8A87C')"></div>
-      <div class="skin-opt" data-skin="#C68642" style="background:#C68642" onclick="selectSkin(this,'#C68642')"></div>
-      <div class="skin-opt" data-skin="#8D5524" style="background:#8D5524" onclick="selectSkin(this,'#8D5524')"></div>
-      <div class="skin-opt" data-skin="#5C3317" style="background:#5C3317" onclick="selectSkin(this,'#5C3317')"></div>
-    </div>
-
-    <!-- Gender -->
-    <div class="avatar-section-label">I Am</div>
-    <div class="avatar-options" id="gender-options" style="gap:10px;">
-      <div class="avatar-opt selected" id="gender-male" onclick="selectGender('male')" style="width:auto;padding:6px 18px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;">👦 Male</div>
-      <div class="avatar-opt" id="gender-female" onclick="selectGender('female')" style="width:auto;padding:6px 18px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;">👧 Female</div>
-    </div>
-
-    <!-- Hair Style -->
-    <div class="avatar-section-label">Hair Style</div>
-    <div class="avatar-options" id="hair-options">
-      <div class="avatar-opt selected" data-hair="m1" onclick="selectHair(this,'m1')" title="Short"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/><circle cx="14" cy="19" r="1.5" fill="#1A1008"/><circle cx="22" cy="19" r="1.5" fill="#1A1008"/><path d="M15 23 Q18 26 21 23" fill="none" stroke="#C0856A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="avatar-opt" data-hair="m2" onclick="selectHair(this,'m2')" title="Fade"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="17" r="13" fill="#1A1008"/><ellipse cx="18" cy="23" rx="10" ry="8" fill="#E8C99A"/><ellipse cx="18" cy="18" rx="8" ry="6" fill="#E8C99A"/><circle cx="14" cy="19" r="1.5" fill="#1A1008"/><circle cx="22" cy="19" r="1.5" fill="#1A1008"/><path d="M15 23 Q18 26 21 23" fill="none" stroke="#C0856A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="avatar-opt" data-hair="m3" onclick="selectHair(this,'m3')" title="Curly"><svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="16" rx="13" ry="12" fill="#1A1008"/><circle cx="6" cy="18" r="5" fill="#1A1008"/><circle cx="30" cy="18" r="5" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/><circle cx="14" cy="20" r="1.5" fill="#1A1008"/><circle cx="22" cy="20" r="1.5" fill="#1A1008"/><path d="M15 24 Q18 27 21 24" fill="none" stroke="#C0856A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="avatar-opt" data-hair="m4" onclick="selectHair(this,'m4')" title="Afro"><svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="15" rx="16" ry="14" fill="#1A1008"/><ellipse cx="18" cy="22" rx="10" ry="9" fill="#E8C99A"/><circle cx="14" cy="20" r="1.5" fill="#1A1008"/><circle cx="22" cy="20" r="1.5" fill="#1A1008"/><path d="M15 24 Q18 27 21 24" fill="none" stroke="#C0856A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="avatar-opt" data-hair="m5" onclick="selectHair(this,'m5')" title="Bald"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="#E8C99A"/><circle cx="14" cy="17" r="1.5" fill="#1A1008"/><circle cx="22" cy="17" r="1.5" fill="#1A1008"/><path d="M15 22 Q18 25 21 22" fill="none" stroke="#C0856A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    </div>
-
-    <!-- Hair Colour -->
-    <div class="avatar-section-label">Hair Colour</div>
-    <div class="avatar-options" id="haircolor-options">
-      <div class="skin-opt selected" data-hc="#1A1008" style="background:#1A1008" onclick="selectHairColor(this,'#1A1008')"></div>
-      <div class="skin-opt" data-hc="#4A3020" style="background:#4A3020" onclick="selectHairColor(this,'#4A3020')"></div>
-      <div class="skin-opt" data-hc="#8B4513" style="background:#8B4513" onclick="selectHairColor(this,'#8B4513')"></div>
-      <div class="skin-opt" data-hc="#D4A843" style="background:#D4A843" onclick="selectHairColor(this,'#D4A843')"></div>
-      <div class="skin-opt" data-hc="#E8E8E8" style="background:#E8E8E8;border:1px solid #DDD" onclick="selectHairColor(this,'#E8E8E8')"></div>
-      <div class="skin-opt" data-hc="#FF6B9D" style="background:#FF6B9D" onclick="selectHairColor(this,'#FF6B9D')"></div>
-    </div>
-
-    <!-- Shirt Colour -->
-    <div class="avatar-section-label">Shirt Colour</div>
-    <div class="avatar-options" id="shirt-options">
-      <div class="shirt-opt selected" data-shirt="#B01C20" style="background:#B01C20" onclick="selectShirt(this,'#B01C20')"></div>
-      <div class="shirt-opt" data-shirt="#1E3A6E" style="background:#1E3A6E" onclick="selectShirt(this,'#1E3A6E')"></div>
-      <div class="shirt-opt" data-shirt="#2D6A4F" style="background:#2D6A4F" onclick="selectShirt(this,'#2D6A4F')"></div>
-      <div class="shirt-opt" data-shirt="#D4A843" style="background:#D4A843" onclick="selectShirt(this,'#D4A843')"></div>
-      <div class="shirt-opt" data-shirt="#4A4A4A" style="background:#4A4A4A" onclick="selectShirt(this,'#4A4A4A')"></div>
-      <div class="shirt-opt" data-shirt="#FFFFFF" style="background:#FFFFFF;border:1px solid #DDD" onclick="selectShirt(this,'#FFFFFF')"></div>
-      <div class="shirt-opt" data-shirt="#FF8C00" style="background:#FF8C00" onclick="selectShirt(this,'#FF8C00')"></div>
-      <div class="shirt-opt" data-shirt="#9B59B6" style="background:#9B59B6" onclick="selectShirt(this,'#9B59B6')"></div>
-      <div class="shirt-opt" data-shirt="#000000" style="background:#000000" onclick="selectShirt(this,'#000000')"></div>
-    </div>
-
-    <button class="avatar-save-btn" onclick="saveAvatar()">Save Avatar ✓</button>
-    <button style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--grey);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="closeAvatarBuilder()">Cancel</button>
-  </div>
-</div>
 
 </body>
 </html>
