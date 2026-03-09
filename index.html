@@ -2405,7 +2405,7 @@ function enterApp() {
 
   document.getElementById('nav-name').textContent = name;
   document.getElementById('nav-avatar').textContent = initials;
-  document.getElementById('hero-greeting').textContent = `Welcome to Rise, ${name}.`;
+  document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${name}.`;
 
   if (currentProfile?.role === 'admin') {
     document.getElementById('tab-admin').style.display = 'flex';
@@ -2888,7 +2888,7 @@ async function saveProfile() {
     if (updates.name) {
       document.getElementById('nav-name').textContent = updates.name;
       document.getElementById('profile-display-name').textContent = updates.name;
-      document.getElementById('hero-greeting').textContent = `Welcome to Rise, ${updates.name}.`;
+      document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${updates.name}.`;
       document.getElementById('nav-avatar').textContent = updates.name.charAt(0).toUpperCase();
     }
     showToast('Profile saved ✓');
