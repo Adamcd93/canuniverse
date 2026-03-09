@@ -1848,7 +1848,7 @@ body {
       <div class="mentor-avatar">A</div>
       <div style="flex:1">
         <div class="mentor-name">Adam</div>
-        <div class="mentor-role">Program Founder · Mentor</div>
+        <div class="mentor-role">Program Founder · Rise Mentor</div>
         <div class="mentor-online"><div class="online-dot"></div> Active this week</div>
       </div>
       <div class="card-arrow">›</div>
@@ -2061,12 +2061,8 @@ body {
         <textarea class="profile-input" id="pf-bio" placeholder="A few sentences about who you are..." style="min-height:80px;resize:vertical;line-height:1.6"></textarea>
       </div>
       <div class="profile-field">
-        <div class="profile-field-label">Neighbourhood / School </div>
+        <div class="profile-field-label">City / Neighbourhood</div>
         <input class="profile-input" id="pf-city" type="text" placeholder="Where are you from?">
-      </div>
-      <div class="profile-field">
-        <div class="profile-field-label">Grade/Major </div>
-        <input class="profile-input" id="pf-city" type="text" placeholder="What Grade or Major are you in?">
       </div>
     </div>
 
@@ -2666,8 +2662,9 @@ init();
 
 // ── AVATAR STATE ──
 let avatarConfig = {
+  gender: 'male',
+  hair: 'm_short',
   skin: '#FDDBB4',
-  hair: 'short',
   hairColor: '#1A1008',
   shirt: '#B01C20'
 };
@@ -2677,69 +2674,78 @@ function drawAvatar(svgEl, cfg, size = 100) {
   if (!svgEl) return;
   const s = size;
   const cx = s / 2;
-
-  // Proportions
-  const headY = s * 0.28;
+  const headY = s * 0.30;
   const headR = s * 0.22;
   const neckH = s * 0.08;
-  const shirtY = headY + headR + neckH;
 
-  // Hair shapes by style
-  const hairShapes = {
-    short: `<rect x="${cx - headR + 2}" y="${headY - headR * 0.6}" width="${headR * 2 - 4}" height="${headR * 0.7}" rx="8" fill="${cfg.hairColor}"/>`,
-    medium: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
-             <rect x="${cx - headR - 1}" y="${headY}" width="8" height="${headR * 1.1}" rx="4" fill="${cfg.hairColor}"/>
-             <rect x="${cx + headR - 7}" y="${headY}" width="8" height="${headR * 1.1}" rx="4" fill="${cfg.hairColor}"/>`,
-    long: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
-           <rect x="${cx - headR - 2}" y="${headY}" width="10" height="${headR * 1.8}" rx="5" fill="${cfg.hairColor}"/>
-           <rect x="${cx + headR - 8}" y="${headY}" width="10" height="${headR * 1.8}" rx="5" fill="${cfg.hairColor}"/>`,
-    curly: `<ellipse cx="${cx}" cy="${headY - headR * 0.3}" rx="${headR + 4}" ry="${headR * 0.9}" fill="${cfg.hairColor}"/>
-            <circle cx="${cx - headR}" cy="${headY - headR * 0.1}" r="6" fill="${cfg.hairColor}"/>
-            <circle cx="${cx + headR}" cy="${headY - headR * 0.1}" r="6" fill="${cfg.hairColor}"/>
-            <circle cx="${cx - headR * 0.5}" cy="${headY - headR * 1.1}" r="5" fill="${cfg.hairColor}"/>
-            <circle cx="${cx + headR * 0.5}" cy="${headY - headR * 1.1}" r="5" fill="${cfg.hairColor}"/>`,
-    locs: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.8}" fill="${cfg.hairColor}"/>
-           ${[...Array(7)].map((_, i) => {
-             const x = cx - headR + (i * headR * 0.33);
-             return `<rect x="${x}" y="${headY - headR * 0.5}" width="5" height="${headR * (0.8 + Math.sin(i) * 0.3)}" rx="3" fill="${cfg.hairColor}" opacity="${0.8 + i * 0.03}"/>`;
-           }).join('')}`,
-    afro: `<ellipse cx="${cx}" cy="${headY - headR * 0.5}" rx="${headR + 10}" ry="${headR + 6}" fill="${cfg.hairColor}"/>`,
-    bun: `<ellipse cx="${cx}" cy="${headY - headR * 0.2}" rx="${headR + 2}" ry="${headR * 0.6}" fill="${cfg.hairColor}"/>
-          <circle cx="${cx}" cy="${headY - headR * 1.0}" r="${headR * 0.35}" fill="${cfg.hairColor}"/>`,
-    bald: ``
+  // Male hair styles — clean, sit ON TOP of head
+  const maleHair = {
+    m_short: `
+      <rect x="${cx - headR + 2}" y="${headY - headR}" width="${headR * 2 - 4}" height="${headR * 0.55}" rx="${headR * 0.3}" fill="${cfg.hairColor}"/>`,
+    m_fade: `
+      <rect x="${cx - headR + 2}" y="${headY - headR}" width="${headR * 2 - 4}" height="${headR * 0.45}" rx="${headR * 0.2}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR * 0.7}" y="${headY - headR}" width="${headR * 1.4}" height="${headR * 0.7}" rx="${headR * 0.25}" fill="${cfg.hairColor}"/>`,
+    m_curly: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.82}" rx="${headR * 0.85}" ry="${headR * 0.55}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx - headR * 0.65}" cy="${headY - headR * 0.75}" r="${headR * 0.28}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx + headR * 0.65}" cy="${headY - headR * 0.75}" r="${headR * 0.28}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx - headR * 0.3}" cy="${headY - headR * 1.05}" r="${headR * 0.22}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx + headR * 0.3}" cy="${headY - headR * 1.05}" r="${headR * 0.22}" fill="${cfg.hairColor}"/>`,
+    m_afro: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.7}" rx="${headR * 1.15}" ry="${headR * 0.95}" fill="${cfg.hairColor}"/>`,
+    m_bald: ``
   };
 
-  const hair = hairShapes[cfg.hair] || hairShapes.short;
+  // Female hair styles
+  const femaleHair = {
+    f_long: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.75}" rx="${headR + 3}" ry="${headR * 0.7}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR - 3}" y="${headY - headR * 0.2}" width="${headR * 0.55}" height="${s * 0.42}" rx="${headR * 0.25}" fill="${cfg.hairColor}"/>
+      <rect x="${cx + headR - headR * 0.25}" y="${headY - headR * 0.2}" width="${headR * 0.55}" height="${s * 0.42}" rx="${headR * 0.25}" fill="${cfg.hairColor}"/>`,
+    f_bob: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.75}" rx="${headR + 3}" ry="${headR * 0.7}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR - 2}" y="${headY - headR * 0.2}" width="${headR * 0.5}" height="${headR * 1.1}" rx="${headR * 0.22}" fill="${cfg.hairColor}"/>
+      <rect x="${cx + headR - headR * 0.22}" y="${headY - headR * 0.2}" width="${headR * 0.5}" height="${headR * 1.1}" rx="${headR * 0.22}" fill="${cfg.hairColor}"/>`,
+    f_bun: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.75}" rx="${headR + 2}" ry="${headR * 0.55}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx}" cy="${headY - headR * 1.25}" r="${headR * 0.38}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR * 0.15}" y="${headY - headR * 1.25}" width="${headR * 0.3}" height="${headR * 0.5}" fill="${cfg.hairColor}"/>`,
+    f_curly: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.7}" rx="${headR * 1.1}" ry="${headR * 0.75}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx - headR}" cy="${headY - headR * 0.4}" r="${headR * 0.35}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx + headR}" cy="${headY - headR * 0.4}" r="${headR * 0.35}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx - headR * 0.5}" cy="${headY - headR * 1.1}" r="${headR * 0.28}" fill="${cfg.hairColor}"/>
+      <circle cx="${cx + headR * 0.5}" cy="${headY - headR * 1.1}" r="${headR * 0.28}" fill="${cfg.hairColor}"/>`,
+    f_locs: `
+      <ellipse cx="${cx}" cy="${headY - headR * 0.75}" rx="${headR + 2}" ry="${headR * 0.65}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR - 2}" y="${headY - headR * 0.3}" width="${headR * 0.4}" height="${s * 0.38}" rx="${headR * 0.2}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR * 0.55}" y="${headY - headR * 0.2}" width="${headR * 0.35}" height="${s * 0.44}" rx="${headR * 0.17}" fill="${cfg.hairColor}"/>
+      <rect x="${cx - headR * 0.12}" y="${headY - headR * 0.15}" width="${headR * 0.35}" height="${s * 0.45}" rx="${headR * 0.17}" fill="${cfg.hairColor}"/>
+      <rect x="${cx + headR * 0.3}" y="${headY - headR * 0.2}" width="${headR * 0.35}" height="${s * 0.44}" rx="${headR * 0.17}" fill="${cfg.hairColor}"/>
+      <rect x="${cx + headR * 0.75}" y="${headY - headR * 0.3}" width="${headR * 0.4}" height="${s * 0.38}" rx="${headR * 0.2}" fill="${cfg.hairColor}"/>`
+  };
+
+  const allHair = { ...maleHair, ...femaleHair };
+  const hair = allHair[cfg.hair] || '';
+
+  // Body shape differs slightly by gender
+  const bodyRx = cfg.gender === 'female' ? s * 0.32 : s * 0.36;
+  const bodyRy = cfg.gender === 'female' ? s * 0.32 : s * 0.26;
+  const bodyY  = cfg.gender === 'female' ? s * 0.84 : s * 0.88;
 
   const svg = `
-    <!-- Background -->
     <rect width="${s}" height="${s}" fill="transparent"/>
-
-    <!-- Shirt / body -->
-    <ellipse cx="${cx}" cy="${s * 0.88}" rx="${s * 0.38}" ry="${s * 0.28}" fill="${cfg.shirt}"/>
-
-    <!-- Neck -->
+    <ellipse cx="${cx}" cy="${bodyY}" rx="${bodyRx}" ry="${bodyRy}" fill="${cfg.shirt}"/>
     <rect x="${cx - s * 0.07}" y="${headY + headR - 2}" width="${s * 0.14}" height="${neckH + 4}" rx="4" fill="${cfg.skin}"/>
-
-    <!-- Head -->
     <circle cx="${cx}" cy="${headY}" r="${headR}" fill="${cfg.skin}"/>
-
-    <!-- Hair (behind face elements) -->
     ${hair}
-
-    <!-- Eyes -->
-    <circle cx="${cx - headR * 0.35}" cy="${headY - headR * 0.05}" r="${headR * 0.1}" fill="#2C1810"/>
-    <circle cx="${cx + headR * 0.35}" cy="${headY - headR * 0.05}" r="${headR * 0.1}" fill="#2C1810"/>
-    <circle cx="${cx - headR * 0.32}" cy="${headY - headR * 0.08}" r="${headR * 0.04}" fill="white"/>
-    <circle cx="${cx + headR * 0.32}" cy="${headY - headR * 0.08}" r="${headR * 0.04}" fill="white"/>
-
-    <!-- Nose -->
-    <ellipse cx="${cx}" cy="${headY + headR * 0.18}" rx="${headR * 0.08}" ry="${headR * 0.06}" fill="${cfg.skin}" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
-
-    <!-- Smile -->
-    <path d="M ${cx - headR * 0.25} ${headY + headR * 0.38} Q ${cx} ${headY + headR * 0.55} ${cx + headR * 0.25} ${headY + headR * 0.38}" fill="none" stroke="#C0856A" stroke-width="${s * 0.018}" stroke-linecap="round"/>
+    <circle cx="${cx - headR * 0.35}" cy="${headY}" r="${headR * 0.1}" fill="#2C1810"/>
+    <circle cx="${cx + headR * 0.35}" cy="${headY}" r="${headR * 0.1}" fill="#2C1810"/>
+    <circle cx="${cx - headR * 0.32}" cy="${headY - headR * 0.04}" r="${headR * 0.04}" fill="white"/>
+    <circle cx="${cx + headR * 0.32}" cy="${headY - headR * 0.04}" r="${headR * 0.04}" fill="white"/>
+    <ellipse cx="${cx}" cy="${headY + headR * 0.22}" rx="${headR * 0.07}" ry="${headR * 0.05}" fill="${cfg.skin}" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
+    <path d="M ${cx - headR * 0.22} ${headY + headR * 0.42} Q ${cx} ${headY + headR * 0.58} ${cx + headR * 0.22} ${headY + headR * 0.42}" fill="none" stroke="#C0856A" stroke-width="${s * 0.018}" stroke-linecap="round"/>
   `;
-
   svgEl.innerHTML = svg;
 }
 
@@ -2767,14 +2773,19 @@ function closeAvatarBuilder() {
 }
 
 function syncAvatarUI() {
+  // Gender
+  const g = avatarConfig.gender || 'male';
+  selectGender(g);
   // Skin
   document.querySelectorAll('.skin-opt[data-skin]').forEach(el => {
     el.classList.toggle('selected', el.dataset.skin === avatarConfig.skin);
   });
-  // Hair style
-  document.querySelectorAll('.avatar-opt[data-hair]').forEach(el => {
-    el.classList.toggle('selected', el.dataset.hair === avatarConfig.hair);
-  });
+  // Hair style (after gender sets the options)
+  setTimeout(() => {
+    document.querySelectorAll('.avatar-opt[data-hair]').forEach(el => {
+      el.classList.toggle('selected', el.dataset.hair === avatarConfig.hair);
+    });
+  }, 50);
   // Hair color
   document.querySelectorAll('.skin-opt[data-hc]').forEach(el => {
     el.classList.toggle('selected', el.dataset.hc === avatarConfig.hairColor);
@@ -2797,6 +2808,36 @@ function selectSkin(el, val) {
   document.querySelectorAll('.skin-opt[data-skin]').forEach(e => e.classList.remove('selected'));
   el.classList.add('selected');
   avatarConfig.skin = val;
+  updateBuilderPreview();
+}
+
+function selectGender(gender) {
+  avatarConfig.gender = gender;
+  // Switch hair options between male and female sets
+  const maleHairs = ['m_short','m_fade','m_curly','m_afro','m_bald'];
+  const femaleHairs = ['f_long','f_bob','f_bun','f_curly','f_locs'];
+  const hairContainer = document.getElementById('hair-options');
+  if (gender === 'male') {
+    hairContainer.innerHTML = `
+      <div class="avatar-opt selected" data-hair="m_short" onclick="selectHair(this,'m_short')" title="Short"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><rect x="7" y="10" width="18" height="7" rx="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_fade" onclick="selectHair(this,'m_fade')" title="Fade"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><rect x="8" y="10" width="16" height="5" rx="3" fill="#1A1008"/><rect x="10" y="8" width="12" height="6" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_curly" onclick="selectHair(this,'m_curly')" title="Curly"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><ellipse cx="16" cy="12" rx="8" ry="5" fill="#1A1008"/><circle cx="8" cy="14" r="4" fill="#1A1008"/><circle cx="24" cy="14" r="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_afro" onclick="selectHair(this,'m_afro')" title="Afro"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="20" r="8" fill="#E8C99A"/><ellipse cx="16" cy="13" rx="12" ry="10" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_bald" onclick="selectHair(this,'m_bald')" title="Bald"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="#E8C99A"/></svg></div>`;
+    avatarConfig.hair = 'm_short';
+    document.getElementById('gender-male').classList.add('selected');
+    document.getElementById('gender-female').classList.remove('selected');
+  } else {
+    hairContainer.innerHTML = `
+      <div class="avatar-opt selected" data-hair="f_long" onclick="selectHair(this,'f_long')" title="Long"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="17" r="9" fill="#E8C99A"/><ellipse cx="16" cy="11" rx="10" ry="6" fill="#1A1008"/><rect x="5" y="14" width="5" height="14" rx="3" fill="#1A1008"/><rect x="22" y="14" width="5" height="14" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="f_bob" onclick="selectHair(this,'f_bob')" title="Bob"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="17" r="9" fill="#E8C99A"/><ellipse cx="16" cy="11" rx="10" ry="6" fill="#1A1008"/><rect x="5" y="14" width="5" height="8" rx="3" fill="#1A1008"/><rect x="22" y="14" width="5" height="8" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="f_bun" onclick="selectHair(this,'f_bun')" title="Bun"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="18" r="9" fill="#E8C99A"/><ellipse cx="16" cy="12" rx="10" ry="5" fill="#1A1008"/><circle cx="16" cy="6" r="5" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="f_curly" onclick="selectHair(this,'f_curly')" title="Curly"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="18" r="9" fill="#E8C99A"/><ellipse cx="16" cy="11" rx="11" ry="7" fill="#1A1008"/><circle cx="5" cy="15" r="4" fill="#1A1008"/><circle cx="27" cy="15" r="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="f_locs" onclick="selectHair(this,'f_locs')" title="Locs"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="17" r="9" fill="#E8C99A"/><ellipse cx="16" cy="10" rx="10" ry="6" fill="#1A1008"/><rect x="4" y="14" width="4" height="13" rx="2" fill="#1A1008"/><rect x="9" y="14" width="4" height="15" rx="2" fill="#1A1008"/><rect x="14" y="14" width="4" height="15" rx="2" fill="#1A1008"/><rect x="19" y="14" width="4" height="15" rx="2" fill="#1A1008"/><rect x="24" y="14" width="4" height="13" rx="2" fill="#1A1008"/></svg></div>`;
+    avatarConfig.hair = 'f_long';
+    document.getElementById('gender-female').classList.add('selected');
+    document.getElementById('gender-male').classList.remove('selected');
+  }
   updateBuilderPreview();
 }
 
@@ -3563,17 +3604,21 @@ document.addEventListener('keydown', (e) => {
       <div class="skin-opt" data-skin="#5C3317" style="background:#5C3317" onclick="selectSkin(this,'#5C3317')"></div>
     </div>
 
+    <!-- Gender -->
+    <div class="avatar-section-label">I Am</div>
+    <div class="avatar-options" id="gender-options" style="gap:10px;">
+      <div class="avatar-opt selected" id="gender-male" onclick="selectGender('male')" style="width:auto;padding:6px 18px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;">👦 Male</div>
+      <div class="avatar-opt" id="gender-female" onclick="selectGender('female')" style="width:auto;padding:6px 18px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;">👧 Female</div>
+    </div>
+
     <!-- Hair style -->
     <div class="avatar-section-label">Hair Style</div>
     <div class="avatar-options" id="hair-options">
-      <div class="avatar-opt selected" data-hair="short" onclick="selectHair(this,'short')" title="Short"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><rect x="6" y="8" width="16" height="7" rx="4" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="medium" onclick="selectHair(this,'medium')" title="Medium"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="15" r="8" fill="#E8C99A"/><ellipse cx="14" cy="11" rx="9" ry="6" fill="#1A1008"/><rect x="5" y="14" width="5" height="8" rx="3" fill="#1A1008"/><rect x="18" y="14" width="5" height="8" rx="3" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="long" onclick="selectHair(this,'long')" title="Long"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="8" fill="#E8C99A"/><ellipse cx="14" cy="10" rx="9" ry="6" fill="#1A1008"/><rect x="4" y="13" width="5" height="12" rx="3" fill="#1A1008"/><rect x="19" y="13" width="5" height="12" rx="3" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="curly" onclick="selectHair(this,'curly')" title="Curly"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><ellipse cx="14" cy="10" rx="10" ry="7" fill="#1A1008"/><circle cx="5" cy="13" r="4" fill="#1A1008"/><circle cx="23" cy="13" r="4" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="locs" onclick="selectHair(this,'locs')" title="Locs"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="8" fill="#E8C99A"/><ellipse cx="14" cy="9" rx="9" ry="5" fill="#1A1008"/><rect x="5" y="12" width="3" height="10" rx="2" fill="#1A1008"/><rect x="9" y="12" width="3" height="12" rx="2" fill="#1A1008"/><rect x="13" y="12" width="3" height="11" rx="2" fill="#1A1008"/><rect x="17" y="12" width="3" height="12" rx="2" fill="#1A1008"/><rect x="21" y="12" width="3" height="10" rx="2" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="afro" onclick="selectHair(this,'afro')" title="Afro"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="7" fill="#E8C99A"/><ellipse cx="14" cy="11" rx="12" ry="10" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="bun" onclick="selectHair(this,'bun')" title="Bun"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="16" r="8" fill="#E8C99A"/><ellipse cx="14" cy="12" rx="9" ry="5" fill="#1A1008"/><circle cx="14" cy="6" r="4" fill="#1A1008"/></svg></div>
-      <div class="avatar-opt" data-hair="bald" onclick="selectHair(this,'bald')" title="Bald"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="15" r="9" fill="#E8C99A"/></svg></div>
+      <div class="avatar-opt selected" data-hair="m_short" onclick="selectHair(this,'m_short')" title="Short"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><rect x="7" y="10" width="18" height="7" rx="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_fade" onclick="selectHair(this,'m_fade')" title="Fade"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><rect x="8" y="10" width="16" height="5" rx="3" fill="#1A1008"/><rect x="10" y="8" width="12" height="6" rx="3" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_curly" onclick="selectHair(this,'m_curly')" title="Curly"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9" fill="#E8C99A"/><ellipse cx="16" cy="12" rx="8" ry="5" fill="#1A1008"/><circle cx="8" cy="14" r="4" fill="#1A1008"/><circle cx="24" cy="14" r="4" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_afro" onclick="selectHair(this,'m_afro')" title="Afro"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="20" r="8" fill="#E8C99A"/><ellipse cx="16" cy="13" rx="12" ry="10" fill="#1A1008"/></svg></div>
+      <div class="avatar-opt" data-hair="m_bald" onclick="selectHair(this,'m_bald')" title="Bald"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="#E8C99A"/></svg></div>
     </div>
 
     <!-- Hair colour -->
@@ -3585,8 +3630,6 @@ document.addEventListener('keydown', (e) => {
       <div class="skin-opt" data-hc="#D4A843" style="background:#D4A843" onclick="selectHairColor(this,'#D4A843')"></div>
       <div class="skin-opt" data-hc="#E8E8E8" style="background:#E8E8E8;border:1px solid #DDD" onclick="selectHairColor(this,'#E8E8E8')"></div>
       <div class="skin-opt" data-hc="#FF6B9D" style="background:#FF6B9D" onclick="selectHairColor(this,'#FF6B9D')"></div>
-      <div class="skin-opt" data-hc="#7B68EE" style="background:#7B68EE" onclick="selectHairColor(this,'#7B68EE')"></div>
-      <div class="skin-opt" data-hc="#00CED1" style="background:#00CED1" onclick="selectHairColor(this,'#00CED1')"></div>
     </div>
 
     <!-- Shirt colour -->
@@ -3600,7 +3643,6 @@ document.addEventListener('keydown', (e) => {
       <div class="shirt-opt" data-shirt="#FFFFFF" style="background:#FFFFFF;border:1px solid #DDD" onclick="selectShirt(this,'#FFFFFF')"></div>
       <div class="shirt-opt" data-shirt="#FF8C00" style="background:#FF8C00" onclick="selectShirt(this,'#FF8C00')"></div>
       <div class="shirt-opt" data-shirt="#9B59B6" style="background:#9B59B6" onclick="selectShirt(this,'#9B59B6')"></div>
-      <div class="shirt-opt" data-shirt="#E74C3C" style="background:#E74C3C" onclick="selectShirt(this,'#E74C3C')"></div>
       <div class="shirt-opt" data-shirt="#000000" style="background:#000000" onclick="selectShirt(this,'#000000')"></div>
     </div>
 
