@@ -2000,7 +2000,7 @@ body {
       <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 3 · FALL</div><div class="tl-title">Beliefs & Barriers</div></div></div>
       <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 4 · FALL</div><div class="tl-title">The F8 Life Map</div></div></div>
       <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 5 · FALL</div><div class="tl-title">Who Am I Becoming?</div></div></div>
-      <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 6 · FALL</div><div class="tl-title">Career, Purpose & My Story</div></div></div>
+      <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 6 · FALL</div><div class="tl-title">Career, Purpose & My Money Story</div></div></div>
       <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 7 · FALL</div><div class="tl-title">My People — Building Your Circle</div></div></div>
       <div class="timeline-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-date">SESSION 8 · FALL</div><div class="tl-title">Fall Reflection & First Declaration</div></div></div>
     </div>
@@ -2324,7 +2324,8 @@ function selectRole(el, role) {
 
 // ── PROFILE ──
 async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (error) console.warn('loadProfile error:', error.message);
   currentProfile = data;
 }
 
@@ -2407,18 +2408,26 @@ function enterApp() {
   document.getElementById('nav-avatar').textContent = initials;
   document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${name}.`;
 
-  if (currentProfile?.role === 'admin') {
-    document.getElementById('tab-admin').style.display = 'flex';
-    document.getElementById('tab-classroom').style.display = 'flex';
-  }
-  // Also check via Supabase in case profile role isn't loaded yet
-  if (!currentProfile?.role || currentProfile.role !== 'admin') {
-    sb.from('profiles').select('role').eq('id', currentUser.id).single().then(({ data }) => {
-      if (data?.role === 'admin') {
+  // Always re-fetch role directly from Supabase to guarantee accuracy
+  sb.from('profiles').select('name, role').eq('id', currentUser.id).single().then(({ data }) => {
+    if (data) {
+      // Update name if profile loaded late
+      if (data.name) {
+        document.getElementById('nav-name').textContent = data.name;
+        document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
+        document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${data.name}.`;
+        if (currentProfile) currentProfile.name = data.name;
+      }
+      if (data.role === 'admin') {
         document.getElementById('tab-admin').style.display = 'flex';
         document.getElementById('tab-classroom').style.display = 'flex';
       }
-    });
+    }
+  });
+
+  if (currentProfile?.role === 'admin') {
+    document.getElementById('tab-admin').style.display = 'flex';
+    document.getElementById('tab-classroom').style.display = 'flex';
   }
 
   showScreen('app');
