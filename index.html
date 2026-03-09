@@ -2400,23 +2400,30 @@ function showError(el, msg) {
 }
 
 // ── ENTER APP ──
+const ADMIN_EMAIL = 'acdmytriw@gmail.com';
+
 function enterApp() {
-  const name = currentProfile?.name || currentUser?.email?.split('@')[0] || 'there';
+  // Check if this is the admin account
+  const isAdmin = currentUser?.email === ADMIN_EMAIL || currentProfile?.role === 'admin';
+  const name = isAdmin ? 'Adam' : (currentProfile?.name || currentUser?.email?.split('@')[0] || 'there');
   const initials = name.charAt(0).toUpperCase();
 
   document.getElementById('nav-name').textContent = name;
   document.getElementById('nav-avatar').textContent = initials;
   document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${name}.`;
 
-  // Always re-fetch role directly from Supabase to guarantee accuracy
+  if (isAdmin) {
+    document.getElementById('tab-admin').style.display = 'flex';
+    document.getElementById('tab-classroom').style.display = 'flex';
+  }
+
+  // Also fetch from Supabase to catch any other admins
   sb.from('profiles').select('name, role').eq('id', currentUser.id).single().then(({ data }) => {
     if (data) {
-      // Update name if profile loaded late
-      if (data.name) {
+      if (data.name && !isAdmin) {
         document.getElementById('nav-name').textContent = data.name;
         document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
         document.getElementById('hero-greeting').textContent = `Welcome to your Future, ${data.name}.`;
-        if (currentProfile) currentProfile.name = data.name;
       }
       if (data.role === 'admin') {
         document.getElementById('tab-admin').style.display = 'flex';
@@ -2424,11 +2431,6 @@ function enterApp() {
       }
     }
   });
-
-  if (currentProfile?.role === 'admin') {
-    document.getElementById('tab-admin').style.display = 'flex';
-    document.getElementById('tab-classroom').style.display = 'flex';
-  }
 
   showScreen('app');
   switchPage('home');
@@ -2979,10 +2981,8 @@ async function verifyAdmin() {
 
 // ── ENTER CLASSROOM ──
 async function enterClassroom() {
-  document.getElementById('login-overlay').style.display = 'none';
-  document.getElementById('classroom').style.display = 'flex';
-  await crLoadData();
-  crRenderClassroom();
+  // Uses main app navigation now
+  switchPage('classroom');
 }
 
 // ── LOAD DATA ──
@@ -3321,6 +3321,7 @@ async function crSaveAssignments() {
 
 function crSetSaveIndicator(state) {
   const el = document.getElementById('save-indicator');
+  if (!el) return;
   if (state === 'saved') { el.textContent = 'All saved ✓'; el.className = 'save-indicator saved'; }
   else if (state === 'saving') { el.textContent = 'Saving...'; el.className = 'save-indicator saving'; }
   else { el.textContent = 'Unsaved changes'; el.className = 'save-indicator'; }
@@ -3336,12 +3337,12 @@ function showTooltip(e, text) {
 }
 
 function hideTooltip() {
-  document.getElementById('tooltip').style.display = 'none';
+  const _tt = document.getElementById('tooltip'); if (_tt) _tt.style.display = 'none';
 }
 
 document.addEventListener('mousemove', (e) => {
   const t = document.getElementById('tooltip');
-  if (t.style.display === 'block') {
+  if (t && t.style.display === 'block') {
     t.style.left = (e.clientX + 12) + 'px';
     t.style.top = (e.clientY - 32) + 'px';
   }
